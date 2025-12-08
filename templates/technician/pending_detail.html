@@ -1,0 +1,140 @@
+<div class="detail-modal-body">
+    <div class="modal-header">
+        <h2>RECEPTION DETAIL - TNX{{ "%03d" | format(slip.id) }}</h2>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-section">
+            <h3>Customer information</h3>
+            <div class="info-row">
+                <span class="label">Name:</span>
+                <span class="value">{{ slip.owner_name }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Phone number:</span>
+                <span class="value">{{ slip.phone_number }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Address:</span>
+                <span class="value">{{ slip.address }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Description:</span>
+                <span class="value">{{ slip.description }}</span>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Vehicle information</h3>
+            <div class="info-row">
+                <span class="label">Vehicle type:</span>
+                <span class="value">{{ slip.vehicle_type }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Car color:</span>
+                <span class="value">{{ slip.color }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Number plate:</span>
+                <span class="value">{{ slip.license_plate }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Date received:</span>
+                <span class="value">{{ slip.reception_date.strftime('%d/%m/%Y') }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-actions">
+        <form action="{{ url_for('technician_start_repair', slip_id=slip.id) }}" method="POST">
+            <button type="submit" class="btn-create">Start Repair</button>
+        </form>
+    </div>
+
+    <!-- Close area -->
+    <a href="{{ url_for('technician_home') }}" class="close-overlay-link"></a>
+</div>
+
+<style>
+    .detail-modal-body {
+        background-color: #E0E0E0;
+        padding: 2rem;
+        border-radius: 8px;
+        width: 100%;
+        position: relative;
+    }
+
+    .modal-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .modal-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: #333;
+        text-transform: uppercase;
+        border-bottom: 2px solid #8B0000;
+        display: inline-block;
+        padding-bottom: 0.5rem;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-section h3 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .info-row {
+        margin-bottom: 0.5rem;
+        display: flex;
+    }
+
+    .info-row .label {
+        width: 150px;
+        color: #555;
+    }
+
+    .info-row .value {
+        font-weight: 500;
+        color: #333;
+    }
+
+    .modal-actions {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .btn-create {
+        background-color: #8B0000;
+        color: white;
+        padding: 0.75rem 3rem;
+        border: none;
+        border-radius: 4px;
+        font-weight: bold;
+        text-decoration: none;
+        display: inline-block;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    .close-overlay-link {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        cursor: default;
+    }
+</style>

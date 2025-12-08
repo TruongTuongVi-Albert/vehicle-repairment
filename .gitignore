@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+
+# Editor/IDE specific files
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+
+# Flask specific
+instance/
+*.sqlite3
+*.db
+/static/dist/
+/static/build/
+
+# Logs and temporary files
+*.log
+tmp/

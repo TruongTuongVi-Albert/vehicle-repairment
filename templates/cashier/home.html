@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #F5F5F5;
+    }
+
+    .app-container {
+        flex-direction: column;
+        height: 100vh;
+        display: flex;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .content {
+        padding: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+    }
+
+    /* Header */
+    .top-header {
+        background-color: #990000;
+        color: white;
+        padding: 0.5rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 60px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        background-color: #FFD700;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .center-logo img {
+        height: 40px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+        font-size: 1.2rem;
+    }
+
+    /* Main Content */
+    .main-body {
+        flex: 1;
+        padding: 2rem 4rem;
+        overflow-y: auto;
+    }
+
+    /* Controls */
+    .controls-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .search-box {
+        position: relative;
+        width: 600px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        padding-right: 3rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #F0F0F0;
+        font-size: 1rem;
+    }
+
+    .search-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #990000;
+        font-size: 1.2rem;
+    }
+
+    .filter-buttons {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .filter-btn {
+        padding: 0.5rem 1.5rem;
+        border: 1px solid #990000;
+        border-radius: 4px;
+        background: white;
+        color: #990000;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+
+    .filter-btn.active {
+        background-color: #FFF0F0;
+        /* Light red tint */
+    }
+
+    .note-text {
+        color: #990000;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        font-style: italic;
+    }
+
+    /* Table */
+    .cashier-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #ccc;
+    }
+
+    .cashier-table th {
+        background-color: #E0E0E0;
+        padding: 1rem;
+        text-align: center;
+        font-weight: bold;
+        border: 1px solid #ccc;
+        color: #333;
+    }
+
+    .cashier-table td {
+        padding: 1rem;
+        border: 1px solid #ccc;
+        vertical-align: middle;
+        text-align: center;
+        background-color: #F0F0F0;
+        /* Light gray bg from design */
+    }
+
+    .cashier-table tr:nth-child(even) td {
+        background-color: #E8E8E8;
+        /* Slightly darker for stripes if needed, or keep flat */
+    }
+
+    /* Footer */
+    .footer {
+        background-color: #333;
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .footer h3 {
+        margin: 0 0 0.5rem 0;
+    }
+
+    .footer p {
+        color: #ccc;
+        margin: 0 0 1rem 0;
+    }
+
+    .copyright {
+        color: #666;
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="top-header">
+    <div class="user-info">
+        <div class="user-avatar">
+            <img src="https://ui-avatars.com/api/?name={{ session.get('username', 'User') }}&background=random"
+                alt="User" style="border-radius: 50%; width: 100%; height: 100%;">
+        </div>
+        <span>Hello, {{ session.get('username', 'User') }}</span>
+    </div>
+
+    <div class="center-logo">
+        <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="CRC">
+    </div>
+
+    <div class="header-actions">
+        <img src="{{ url_for('static', filename='images/bell.png') }}" alt="Add" style="width: 30px; height: auto;">
+        <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Add" style="width: 30px; height: auto;">
+    </div>
+</div>
+
+<div class="main-body">
+    <div class="controls-row">
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="Enter search information...">
+            <img class="search-icon" src="{{ url_for('static', filename='images/search.png') }}" alt="Search"
+                style="width: 40px; height: auto;">
+        </div>
+
+        <div class="filter-buttons">
+            <a href="{{ url_for('cashier_home', filter='completed' if current_filter != 'completed' else None) }}"
+                class="filter-btn {{ 'active' if current_filter == 'completed' }}">
+                <span class="status-icon">
+                    <img src="{{ url_for('static', filename='images/approved.png') }}" alt="Complete"
+                        style="width: 20px; height: auto;">
+                </span> Complete </a>
+            </a>
+            <a href="{{ url_for('cashier_home', filter='paid' if current_filter != 'paid' else None) }}"
+                class="filter-btn {{ 'active' if current_filter == 'paid' }}">
+                <span class="status-icon">
+                    <img src="{{ url_for('static', filename='images/paid.png') }}" alt="Complete"
+                        style="width: 20px; height: auto;">
+                </span> Paid
+            </a>
+        </div>
+    </div>
+
+    <div class="note-text">* Note: All amounts are calculated in units (VND)</div>
+
+    <table class="cashier-table">
+        <thead>
+            <tr>
+                <th style="width: 50px;">No</th>
+                <th>Code</th>
+                <th>Customer name</th>
+                <th>N-plate</th>
+                <th>Cardboard costs</th>
+                <th>VAT ({{ vat_rate }}%)</th>
+                <th>Cash bar</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for slip in completed_slips %}
+            <tr onclick="window.location.href='{{ url_for('cashier_invoice', repair_id=slip.repair_id) }}'"
+                style="cursor: pointer;">
+                <td>{{ loop.index }}</td>
+                <td>TNX{{ "%03d" | format(slip.id) }}</td>
+                <td>{{ slip.owner_name }}</td>
+                <td>{{ slip.license_plate }}</td>
+                <td>{{ "{:,.0f}".format(slip.total_amount if slip.total_amount else 0) }}</td>
+                <td>{{ "{:,.0f}".format((slip.total_amount * vat_rate / 100) if slip.total_amount else 0) }}</td>
+                <td>{{ "{:,.0f}".format((slip.total_amount * (1 + vat_rate / 100)) if slip.total_amount else 0) }}</td>
+                <td>
+                    {% if slip.status == 'completed' %}
+                    <span class="status-icon">
+                        <img src="{{ url_for('static', filename='images/approved.png') }}" alt="Complete"
+                            style="width: 20px; height: auto;">
+                    </span>
+                    {% elif slip.status == 'paid' %}
+                    <span class="status-icon">
+                        <img src="{{ url_for('static', filename='images/paid.png') }}" alt="Paid"
+                            style="width: 20px; height: auto;">
+                    </span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center;">No cars ready for payment</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="footer">
+    <h3>CAR REPAIR CENTER</h3>
+    <p>Giving you peace of mind on every road "Revive your ride"</p>
+    <div class="copyright">
+        © 2025 - Car Repair Center | Service Management System v1.0
+    </div>
+</div>
+{% endblock %}

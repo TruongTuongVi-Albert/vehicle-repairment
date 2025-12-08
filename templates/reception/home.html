@@ -1,0 +1,327 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Override base styles to fit the full-width design if possible, or just style the content area -->
+<style>
+    /* Hide default sidebar and make content full width for this specific design if desired, 
+       but for now we'll just style the container. 
+       If the user wants to remove sidebar globally or for this page, we might need more changes.
+       Assuming we work within the content area. */
+    .app-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        display: none;
+        /* Hiding sidebar to match the full-width design shown in image */
+    }
+
+    .content {
+        padding: 0;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    /* Header */
+    .top-header {
+        background-color: #8B0000;
+        color: white;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 80px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        background-color: #FFD700;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .header-logo {
+        height: 50px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 1.5rem;
+        font-size: 1.5rem;
+    }
+
+    /* Main Content */
+    .main-body {
+        flex: 1;
+        padding: 2rem 4rem;
+        overflow-y: auto;
+    }
+
+    .controls-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .add-btn {
+        color: #8B0000;
+        font-size: 2rem;
+        text-decoration: none;
+    }
+
+    .search-box {
+        flex: 1;
+        max-width: 600px;
+        margin: 0 2rem;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #8B0000;
+        border-radius: 4px;
+        background-color: #F5F5F5;
+        flex: 1;
+    }
+
+    .search-icon {
+        position: absolute;
+        right: 10px;
+    }
+
+    .refresh-btn {
+        color: #8B0000;
+        font-size: 1.5rem;
+        cursor: pointer;
+        background: none;
+        border: none;
+    }
+
+    /* Table */
+    .reception-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #ccc;
+    }
+
+    .reception-table th {
+        background-color: #E0E0E0;
+        padding: 1rem;
+        text-align: left;
+        font-weight: bold;
+        border: 1px solid #ccc;
+    }
+
+    .reception-table td {
+        padding: 1rem;
+        border: 1px solid #ccc;
+        vertical-align: middle;
+    }
+
+    .reception-table tr:nth-child(even) {
+        background-color: #F9F9F9;
+    }
+
+    .status-cell {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .status-icon {
+        font-size: 1.2rem;
+    }
+
+    /* Footer */
+    .footer {
+        background-color: #333;
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .footer h3 {
+        color: white;
+        margin-bottom: 0.5rem;
+        font-size: 1.5rem;
+    }
+
+    .footer p {
+        color: #ccc;
+        font-style: italic;
+        margin-bottom: 2rem;
+    }
+
+    .copyright {
+        color: #666;
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="top-header">
+    <div class="user-info">
+        <div class="user-avatar">
+            <img src="https://ui-avatars.com/api/?name={{ session.get('username', 'User') }}&background=random"
+                alt="User" style="border-radius: 50%; width: 100%; height: 100%;">
+        </div>
+        <span>Hello, {{ session.get('username', 'User') }}</span>
+    </div>
+
+    <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="Logo" class="header-logo">
+
+    <div class="header-actions">
+        <img src="{{ url_for('static', filename='images/bell.png') }}" alt="Add" style="width: 30px; height: auto;">
+        <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Add" style="width: 30px; height: auto;">
+    </div>
+</div>
+
+<div class="main-body">
+    <div class="controls-row">
+        <a href="{{ url_for('reception_add_car') }}" class="add-btn">
+            <img src="{{ url_for('static', filename='images/add.png') }}" alt="Add" style="width: 50px; height: auto;">
+        </a>
+
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="Enter search information...">
+            <img class="search-icon" src="{{ url_for('static', filename='images/search.png') }}" alt="Search"
+                style="width: 40px; height: auto;">
+        </div>
+
+        <button class="refresh-btn" onclick="window.location.reload()">
+            <img src="{{ url_for('static', filename='images/refresh.png') }}" alt="Refresh"
+                style="width: 50px; height: auto;">
+        </button>
+    </div>
+
+    <table class="reception-table">
+        <thead>
+            <tr>
+                <th style="width: 50px;">No</th>
+                <th>Code</th>
+                <th>Customer name</th>
+                <th>N-plate</th>
+                <th>V-type</th>
+                <th>Date of receipt</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for slip in slips %}
+            <tr onclick="window.location.href='{{ url_for('reception_detail', slip_id=slip.id) }}'"
+                style="cursor: pointer;">
+                <td>{{ loop.index }}</td>
+                <td>TNX{{ "%03d" | format(slip.id) }}</td>
+                <td>{{ slip.owner_name }}</td>
+                <td>{{ slip.license_plate }}</td>
+                <td>{{ slip.vehicle_type }}</td>
+                <td>{{ slip.reception_date.strftime('%d/%m/%Y') }}</td>
+                <td>
+                    <div class="status-cell">
+                        {% if slip.status == 'pending' %}
+                        <span class="status-icon">
+                            <img src="{{ url_for('static', filename='images/price-tag.png') }}" alt="Pending"
+                                style="width: 20px; height: auto;">
+                        </span> Quote
+                        {% elif slip.status == 'waiting' %}
+                        <span class="status-icon">
+                            <img src="{{ url_for('static', filename='images/time.png') }}" alt="Waiting"
+                                style="width: 20px; height: auto;">
+                        </span> Waiting
+                        {% elif slip.status == 'repairing' %}
+                        <span class="status-icon">
+                            <img src="{{ url_for('static', filename='images/wrench.png') }}" alt="Repairing"
+                                style="width: 20px; height: auto;">
+                        </span> Repairing
+                        {% elif slip.status == 'completed' %}
+                        <span class="status-icon">
+                            <img src="{{ url_for('static', filename='images/approved.png') }}" alt="Complete"
+                                style="width: 20px; height: auto;">
+                        </span> Complete
+                        {% elif slip.status == 'paid' %}
+                        <span class="status-icon">
+                            <img src="{{ url_for('static', filename='images/paid.png') }}" alt="Paid"
+                                style="width: 20px; height: auto;">
+                        </span> Paid
+                        {% else %}
+                        {{ slip.status }}
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center;">No data available</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="footer">
+    <h3>CAR REPAIR CENTER</h3>
+    <p>Giving you peace of mind on every road "Revive your ride"</p>
+    <div class="copyright">
+        © 2025 - Car Repair Center | Service Management System v1.0
+    </div>
+</div>
+
+<!-- Modal Container -->
+{% if modal %}
+<div class="modal-overlay">
+    <a href="{{ url_for('reception_home') }}"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: default; z-index: 0;"></a>
+    <div class="modal-content" style="z-index: 1;">
+        {% if modal == 'add' %}
+        {% include 'reception/add_car.html' %}
+        {% elif modal == 'detail' %}
+        {% include 'reception/detail.html' %}
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background-color: transparent;
+        max-width: 900px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+{% endif %}
+{% endblock %}

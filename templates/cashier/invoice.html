@@ -1,0 +1,468 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #E0E0E0;
+        /* Darker gray background for modal feel */
+    }
+
+    .app-container {
+        flex-direction: column;
+        display: flex;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .content {
+        padding: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: #E0E0E0;
+    }
+
+    /* Header */
+    .top-header {
+        background-color: #990000;
+        color: white;
+        padding: 0.5rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 60px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        background-color: #FFD700;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .center-logo img {
+        height: 40px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+        font-size: 1.2rem;
+    }
+
+    /* Main Content - Invoice Paper */
+    .main-body {
+        flex: 1;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-y: auto;
+    }
+
+    .invoice-paper {
+        background: white;
+        width: 100%;
+        max-width: 900px;
+        padding: 3rem;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        position: relative;
+        border-radius: 4px;
+    }
+
+    .export-btn-container {
+        display: flex;
+        width: 100%;
+        max-width: 996px;
+        margin-bottom: 1rem;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .export-btn {
+        border: 1px solid #990000;
+        color: #990000;
+        background: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 4px;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+
+    .bill-details-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+
+    .bill-details-header h2 {
+        color: #333;
+        font-size: 1.8rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        display: inline-block;
+        border-bottom: 2px solid #990000;
+        padding-bottom: 0.5rem;
+        margin: 0;
+    }
+
+    .bill-meta {
+        position: absolute;
+        right: 0;
+        top: 0;
+        text-align: right;
+        font-size: 0.8rem;
+        color: #666;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-column h3 {
+        font-size: 1rem;
+        color: #333;
+        margin-bottom: 1rem;
+        font-weight: bold;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .info-label {
+        color: #666;
+    }
+
+    .info-value {
+        color: #333;
+        font-weight: 500;
+    }
+
+    .note-text {
+        color: #990000;
+        font-size: 0.85rem;
+        font-style: italic;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Invoice Table */
+    .invoice-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 0;
+        border: 1px solid #ccc;
+    }
+
+    .invoice-table th {
+        background-color: #F0F0F0;
+        padding: 0.75rem;
+        text-align: center;
+        font-weight: bold;
+        border: 1px solid #ccc;
+        font-size: 0.9rem;
+    }
+
+    .invoice-table td {
+        padding: 0.75rem;
+        border: 1px solid #ccc;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+
+    .summary-row td {
+        background-color: #F0F0F0;
+        font-weight: bold;
+    }
+
+    .make-money-row td {
+        background-color: #F0F0F0;
+        font-weight: bold;
+    }
+
+    .make-money-value {
+        color: #990000;
+        font-size: 1.1rem;
+    }
+
+    /* Signatures */
+    .signatures {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 3rem;
+        margin-bottom: 5rem;
+        padding: 0 2rem;
+    }
+
+    .signature-block {
+        text-align: center;
+    }
+
+    .signature-title {
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+    }
+
+    .signature-hint {
+        font-size: 0.8rem;
+        color: #666;
+        font-style: italic;
+    }
+
+    .signature-line {
+        margin-top: 4rem;
+        border-bottom: 1px solid #ccc;
+        width: 200px;
+    }
+
+    /* Warranty */
+    .warranty-section {
+        font-size: 0.85rem;
+        color: #333;
+        margin-bottom: 3rem;
+    }
+
+    .warranty-section p {
+        margin-bottom: 0.5rem;
+    }
+
+    .warranty-section ul {
+        padding-left: 1.5rem;
+        margin: 0;
+    }
+
+    .warranty-section li {
+        margin-bottom: 0.25rem;
+    }
+
+    .center-footer {
+        text-align: center;
+        color: #999;
+        font-size: 0.8rem;
+    }
+
+    .pay-btn-container {
+        margin-top: 2rem;
+        text-align: center;
+    }
+
+    .pay-btn {
+        background-color: #990000;
+        color: white;
+        padding: 0.75rem 3rem;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    /* Footer */
+    .footer {
+        background-color: #333;
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        margin-top: auto;
+        width: 100%;
+    }
+
+    .footer h3 {
+        margin: 0 0 0.5rem 0;
+    }
+
+    .footer p {
+        color: #ccc;
+        margin: 0 0 1rem 0;
+    }
+
+    .copyright {
+        color: #666;
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="top-header">
+    <div class="user-info">
+        <div class="user-avatar">
+            <img src="https://ui-avatars.com/api/?name={{ session.get('username', 'User') }}&background=random"
+                alt="User" style="border-radius: 50%; width: 100%; height: 100%;">
+        </div>
+        <span>Hello, {{ session.get('username', 'User') }}</span>
+    </div>
+
+    <div class="center-logo">
+        <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="CRC">
+    </div>
+
+    <div class="header-actions">
+        <img src="{{ url_for('static', filename='images/bell.png') }}" alt="Add" style="width: 30px; height: auto;">
+        <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Add" style="width: 30px; height: auto;">
+    </div>
+</div>
+
+<div class="main-body">
+    <div class="export-btn-container">
+        <p>Do you want to invoice?</p>
+        <a href="#" class="export-btn">Export</a>
+    </div>
+    <div class="invoice-paper">
+        <div class="bill-details-header">
+            <h2>BILL DETAILS</h2>
+            <div class="bill-meta">
+                <div>Bill Code: TNX{{ "%03d" | format(repair.repair_id) }}</div>
+                <div>Export date: {{ today }}</div>
+            </div>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-column">
+                <h3>Customer information</h3>
+                <div class="info-row">
+                    <span class="info-label">Name:</span>
+                    <span class="info-value">{{ repair.owner_name }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Phone number:</span>
+                    <span class="info-value">{{ repair.phone_number }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Address:</span>
+                    <span class="info-value">{{ repair.address }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Date of receipt:</span>
+                    <span class="info-value">{{ repair.reception_date.strftime('%d/%m/%Y') if repair.reception_date else
+                        'N/A' }}</span>
+                </div>
+            </div>
+            <div class="info-column">
+                <h3>Vehicle information</h3>
+                <div class="info-row">
+                    <span class="info-label">Vehicle type:</span>
+                    <span class="info-value">{{ repair.vehicle_type }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Car color:</span>
+                    <span class="info-value">{{ repair.color }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Number plate:</span>
+                    <span class="info-value">{{ repair.license_plate }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Date repaired:</span>
+                    <span class="info-value">{{ today }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="note-text">* Note: All amounts are calculated in units (VND)</div>
+
+        <table class="invoice-table">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Category</th>
+                    <th>Price (VND)</th>
+                    <th>Accessory</th>
+                    <th>Expense (VND)</th>
+                    <th>Total cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ item.category }}</td>
+                    <td>{{ "{:,.0f}".format(item.price_at_time) }}</td>
+                    <td>{{ item.name if item.name else '-' }}</td>
+                    <td>{{ "{:,.0f}".format(item.labor_fee) }}</td>
+                    <td>{{ "{:,.0f}".format(item.price_at_time * item.quantity + item.labor_fee) }}</td>
+                </tr>
+                {% endfor %}
+
+                <!-- Summary Rows -->
+                <tr class="summary-row">
+                    <td colspan="5" style="text-align: left; padding-left: 2rem;">Total</td>
+                    <td>{{ "{:,.0f}".format(subtotal) }}</td>
+                </tr>
+                <tr class="summary-row">
+                    <td colspan="5" style="text-align: left; padding-left: 2rem;">VAT ({{ vat_rate }}%)</td>
+                    <td>{{ "{:,.0f}".format(vat_amount) }}</td>
+                </tr>
+                <tr class="make-money-row">
+                    <td colspan="5" style="text-align: left; padding-left: 2rem;">Make money</td>
+                    <td class="make-money-value">{{ "{:,.0f}".format(total_amount) }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="signatures">
+            <div class="signature-block">
+                <div class="signature-title">Customer</div>
+                <div class="signature-hint">(Sign and print full name)</div>
+                <div class="signature-line"></div>
+            </div>
+            <div class="signature-block">
+                <div class="signature-title">Cashier</div>
+                <div class="signature-hint">(Sign and print full name)</div>
+                <div class="signature-line"></div>
+            </div>
+        </div>
+
+        <div class="warranty-section">
+            <p>Warranty conditions</p>
+            <ol>
+                <li>Components are warranted according to the manufacturer's regulations.</li>
+                <li>Stamps and invoices must be intact.</li>
+                <li>Warranty only accepted from Monday to Friday every week</li>
+            </ol>
+        </div>
+
+        <div class="center-footer">
+            <div style="font-weight: bold; font-size: 1rem; color: #666;">Car Repair Center</div>
+            <div style="font-style: italic;">Giving you peace of mind on every road "Revive your ride"</div>
+        </div>
+    </div>
+
+    {% if repair.status == 'completed' %}
+    <div class="pay-btn-container">
+        <form method="POST" action="{{ url_for('cashier_process_payment', repair_id=repair.repair_id) }}">
+            <input type="hidden" name="total_amount" value="{{ total_amount }}">
+            <button type="submit" class="pay-btn">Pay bill</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+<div class="footer">
+    <h3>CAR REPAIR CENTER</h3>
+    <p>Giving you peace of mind on every road "Revive your ride"</p>
+    <div class="copyright">
+        © 2025 - Car Repair Center | Service Management System v1.0
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,137 @@
+<div class="add-item-modal">
+    <div class="add-item-header">
+        <h3>{{ 'EDIT ITEM' if edit_item else 'CREATE NEW ITEM' }}</h3>
+    </div>
+
+    <form method="POST"
+        action="{{ url_for('technician_update_item', item_id=edit_item.id) if edit_item else url_for('technician_add_item', repair_id=repair.repair_id) }}">
+        <div class="add-item-form">
+            <div class="form-row">
+                <label>Category:</label>
+                <input type="text" name="category" placeholder="Enter item..."
+                    value="{{ edit_item.category if edit_item else '' }}">
+            </div>
+
+            <div class="form-row">
+                <label>Price (VNĐ):</label>
+                <input type="text" name="current_price" placeholder="Enter price..."
+                    value="{{ edit_item.price_at_time if edit_item else '' }}">
+            </div>
+
+            <div class="form-row">
+                <label>Accessory:</label>
+                <select name="component_id" id="accessorySelect" onchange="updateExpense()">
+                    <option value="" disabled {{ 'selected' if not edit_item or not edit_item.component_id else '' }}>
+                        Enter accessory...</option>
+                    {% for comp in components %}
+                    <option value="{{ comp.id }}" data-price="{{ " {:.0f}".format(comp.current_price) }}" {{ 'selected'
+                        if edit_item and edit_item.component_id==comp.id else '' }}>{{
+                        comp.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-row">
+                <label>Expense (VNĐ):</label>
+                <input type="text" name="expense" id="expenseInput" disabled placeholder="Enter expense..."
+                    value="{{ edit_item.labor_fee if edit_item else '' }}">
+            </div>
+
+            <!-- Hidden quantity for now, default 1 -->
+            <input type="hidden" name="quantity" value="{{ edit_item.quantity if edit_item else 1 }}">
+        </div>
+
+        <div class="add-item-actions">
+            <button type="submit" class="btn-save">{{ 'Update' if edit_item else 'Save' }}</button>
+            <a href="{{ url_for('technician_view_detail', slip_id=repair.repair_id) }}" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    function updateExpense() {
+        const select = document.getElementById('accessorySelect');
+        const expenseInput = document.getElementById('expenseInput');
+        const selectedOption = select.options[select.selectedIndex];
+        const price = selectedOption.getAttribute('data-price');
+
+        if (price) {
+            expenseInput.value = price;
+        }
+    }
+</script>
+
+<style>
+    .add-item-modal {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #C0C0C0;
+        padding: 2rem;
+        border-radius: 8px;
+        width: 500px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        z-index: 1010;
+    }
+
+    .add-item-header h3 {
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 2rem;
+        color: #333;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .form-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .form-row label {
+        width: 120px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .form-row input,
+    .form-row select {
+        flex: 1;
+        padding: 0.5rem;
+        border: 1px solid #A52A2A;
+        /* Brown border */
+        border-radius: 4px;
+        background-color: #E0E0E0;
+    }
+
+    .add-item-actions {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .btn-save {
+        background-color: #8B0000;
+        color: white;
+        padding: 0.5rem 2rem;
+        border: none;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .btn-cancel {
+        background-color: white;
+        color: #8B0000;
+        padding: 0.5rem 2rem;
+        border: 1px solid #8B0000;
+        border-radius: 4px;
+        font-weight: bold;
+        text-decoration: none;
+        display: inline-block;
+    }
+</style>

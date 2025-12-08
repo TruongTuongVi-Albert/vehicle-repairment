@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Reset & Base */
+    body,
+    html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .app-container {
+        flex-direction: column;
+        height: 100vh;
+        display: flex;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .content {
+        padding: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        /* Placeholder car background */
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    /* Header */
+    .top-header {
+        background-color: #990000;
+        /* Deep Red */
+        color: white;
+        padding: 0.5rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 60px;
+        z-index: 10;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        background-color: #FFD700;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #333;
+        overflow: hidden;
+    }
+
+    .user-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .center-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .center-logo img {
+        height: 40px;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        cursor: pointer;
+    }
+
+    /* Dashboard Grid */
+    .dashboard-container {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .modules-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .module-card {
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 180px;
+        transition: transform 0.2s;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .module-card:hover {
+        transform: scale(1.02);
+    }
+
+    /* Card Variants based on image */
+    .card-light {
+        background-color: #F0F0E0;
+        /* Beige/Light */
+        color: #8B0000;
+    }
+
+    .card-red {
+        background-color: #990000;
+        /* Deep Red */
+        color: white;
+    }
+
+    .card-dark {
+        background-color: #4A4A4A;
+        /* Dark Grey for Manager/Admin */
+        color: white;
+    }
+
+    .module-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        /* Using emoji as placeholder for SVG icons */
+    }
+
+    .module-icon img {
+        width: 64px;
+        height: 64px;
+        object-fit: contain;
+    }
+
+    .module-title {
+        font-size: 1.25rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Footer */
+    .footer {
+        background-color: #333;
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        z-index: 10;
+    }
+
+    .footer h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .footer p {
+        color: #ccc;
+        font-style: italic;
+        margin: 0 0 2rem 0;
+        font-size: 1rem;
+    }
+
+    .copyright {
+        color: #666;
+        font-size: 0.85rem;
+    }
+</style>
+
+<div class="top-header">
+    <div class="user-info">
+        <div class="user-avatar">
+            <img src="https://ui-avatars.com/api/?name={{ session.get('username', 'User') }}&background=random"
+                alt="User">
+        </div>
+        <span>Hello, {{ session.get('username', 'User') }}</span>
+    </div>
+
+    <div class="center-logo">
+        <!-- Placeholder for the logo in the middle -->
+        <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="CRC">
+    </div>
+
+    <div class="header-actions">
+        <a href="{{ url_for('logout') }}"
+            style="text-decoration: none; color: white; display: flex; align-items: center; gap: 5px;">
+            Logout <span style="font-size: 1.2rem;">➜</span>
+        </a>
+    </div>
+</div>
+
+<div class="dashboard-container">
+    <div class="modules-grid">
+        <!-- Technician: Light -->
+        {% if session.get('role') == 'technician' or session.get('role') == 'admin' %}
+        <a href="{{ url_for('technician_home') }}" class="module-card card-light">
+            <div class="module-icon">
+                <img src="{{ url_for('static', filename='images/technician.png') }}" alt="Technician">
+            </div>
+            <div class="module-title">Technician</div>
+        </a>
+        {% endif %}
+
+        <!-- Reception: Red -->
+        {% if session.get('role') == 'reception' or session.get('role') == 'admin' %}
+        <a href="{{ url_for('reception_home') }}" class="module-card card-red">
+            <div class="module-icon">
+                <img src="{{ url_for('static', filename='images/reception.png') }}" alt="Reception">
+            </div>
+            <div class="module-title">Reception</div>
+        </a>
+        {% endif %}
+
+        <!-- Cashier: Red -->
+        {% if session.get('role') == 'cashier' or session.get('role') == 'admin' %}
+        <a href="{{ url_for('cashier_home') }}" class="module-card card-red">
+            <div class="module-icon">
+                <img src="{{ url_for('static', filename='images/cashier.png') }}" alt="Cashier">
+            </div>
+            <div class="module-title">Cashier</div>
+        </a>
+        {% endif %}
+
+        <!-- Manager/Admin: Dark/Light -->
+        {% if session.get('role') == 'admin' %}
+        <a href="{{ url_for('admin_dashboard') }}" class="module-card card-light">
+            <div class="module-icon">
+                <img src="{{ url_for('static', filename='images/fund.png') }}" alt="Admin">
+            </div>
+            <div class="module-title">Manager</div>
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="footer">
+    <h2>Car Repair Center</h2>
+    <p>Giving you peace of mind on every road "Revive your ride"</p>
+    <div class="copyright">
+        © 2025 - Car Repair Center | Service Management System v1.0
+    </div>
+</div>
+{% endblock %}

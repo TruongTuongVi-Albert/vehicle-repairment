@@ -1,0 +1,615 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #F5F5F5;
+        margin: 0;
+    }
+
+    .app-container {
+        flex-direction: column;
+        height: 100vh;
+        display: flex;
+    }
+
+    /* Hide sidebar if it exists in base, or override layout */
+    .sidebar {
+        display: none;
+    }
+
+    .content {
+        padding: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+    }
+
+    /* Header */
+    .top-header {
+        background-color: #990000;
+        color: white;
+        padding: 0.5rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 60px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        background-color: #FFD700;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .center-logo img {
+        height: 40px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+        font-size: 1.2rem;
+    }
+
+    /* Main Content */
+    .main-body {
+        flex: 1;
+        padding: 2rem 4rem;
+        overflow-y: auto;
+    }
+
+    /* Footer */
+    .footer {
+        background-color: #333;
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .footer h3 {
+        margin: 0 0 0.5rem 0;
+    }
+
+    .footer p {
+        color: #ccc;
+        margin: 0 0 1rem 0;
+    }
+
+    .copyright {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    /* Dashboard Specific Styles */
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-header h1 {
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .filter-form {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .filter-group label {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .filter-group input {
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 80px;
+        text-align: center;
+        color: #990000;
+        font-weight: bold;
+    }
+
+    .btn-filter {
+        padding: 0.5rem 1.5rem;
+        background-color: #990000;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    /* Chart Common */
+    .section-header-red {
+        background-color: #990000;
+        color: white;
+        text-align: center;
+        padding: 0.75rem;
+        font-weight: bold;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        border-bottom: 1px solid #990000;
+        display: inline-block;
+        padding-bottom: 0.25rem;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        color: #333;
+    }
+
+    /* Bar Chart */
+    .chart-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-container {
+        height: 300px;
+        background-color: #C0C0C0;
+        border-radius: 4px;
+        padding: 1rem;
+        display: flex;
+        align-items: flex-end;
+        margin-bottom: 1rem;
+    }
+
+    .bar-chart {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 2px;
+    }
+
+    .bar-wrapper {
+        flex: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .bar {
+        width: 80%;
+        background-color: #990000;
+        border-radius: 2px 2px 0 0;
+        min-height: 1px;
+    }
+
+    .bar-label {
+        font-size: 0.7rem;
+        margin-top: 4px;
+        color: #333;
+    }
+
+    .total-revenue-display {
+        text-align: center;
+        border: 1px solid #990000;
+        padding: 0.5rem;
+        color: #990000;
+        font-weight: bold;
+        border-radius: 4px;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    /* Ratio Grid */
+    .ratio-section-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .ratio-card {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Pie Chart */
+    .pie-chart-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .pie-chart {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        margin-bottom: 1rem;
+    }
+
+    .pie-legend {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .dot.gray {
+        background-color: #A0A0A0;
+    }
+
+    .stats-list {
+        padding: 0 2rem;
+    }
+
+    .stat-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
+    /* Horizontal Bar Chart */
+    .horiz-chart-container {
+        padding: 2rem;
+        background-color: #C0C0C0;
+        border-radius: 4px;
+        height: 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 1.5rem;
+    }
+
+    .horiz-bar-group {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .horiz-label {
+        width: 80px;
+        text-align: right;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .horiz-track {
+        flex: 1;
+        background-color: white;
+        height: 24px;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .horiz-bar {
+        height: 100%;
+    }
+
+    .horiz-value {
+        width: 30px;
+        font-weight: bold;
+    }
+
+    /* Management Grid */
+    .management-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+
+    .card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary {
+        background-color: #990000;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    /* Component Form Styles */
+    .component-form {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .input-group {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        overflow: hidden;
+        flex: 1;
+    }
+
+    .input-group input {
+        border: none;
+        padding: 0.75rem 1rem;
+        outline: none;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .separator {
+        width: 1px;
+        height: 20px;
+        background-color: #eee;
+    }
+
+    .btn-add {
+        background-color: #990000;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+        text-transform: uppercase;
+        height: 100%;
+    }
+
+    .btn-add:hover {
+        background-color: #cc0000;
+    }
+
+    .btn-cancel:hover {
+        background-color: #eee;
+        border-radius: 4px;
+    }
+</style>
+
+<div class="top-header">
+    <div class="user-info">
+        <div class="user-avatar">
+            <img src="https://ui-avatars.com/api/?name={{ session.get('username', 'User') }}&background=random"
+                alt="User" style="border-radius: 50%; width: 100%; height: 100%;">
+        </div>
+        <span>Hello, {{ session.get('username', 'User') }}</span>
+    </div>
+
+    <div class="center-logo">
+        <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="CRC">
+    </div>
+
+    <div class="header-actions">
+        <img src="{{ url_for('static', filename='images/bell.png') }}" alt="Add" style="width: 30px; height: auto;">
+        <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Add" style="width: 30px; height: auto;">
+    </div>
+</div>
+
+<div class="main-body">
+    <div class="dashboard-header">
+        <h1>Statistics for {{ filter.month }}/{{ filter.year }}</h1>
+
+        <form method="GET" action="{{ url_for('admin_dashboard') }}" class="filter-form">
+            <div class="filter-group">
+                <label>Day:</label>
+                <input type="number" name="day" value="{{ filter.day if filter.day else '' }}" placeholder="---">
+            </div>
+            <div class="filter-group">
+                <label>Month:</label>
+                <input type="number" name="month" value="{{ filter.month }}" min="1" max="12">
+            </div>
+            <div class="filter-group">
+                <label>Year:</label>
+                <input type="number" name="year" value="{{ filter.year }}" min="2000">
+            </div>
+            <button type="submit" class="btn-filter">Filter</button>
+        </form>
+    </div>
+
+    <!-- Store Revenue Section -->
+    <div class="chart-section">
+        <div class="section-header-red">Store revenue</div>
+        <div class="section-subtitle">Daily revenue (or Monthly)</div>
+
+        <div class="chart-container">
+            <div class="bar-chart">
+                {% for data in chart_data %}
+                <div class="bar-wrapper" title="Day {{ data.label }}: {{ '{:,.0f}'.format(data.value) }}">
+                    <div class="bar" style="height: {{ data.percent }}%;"></div>
+                    <span class="bar-label">{{ data.label }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="total-revenue-display">
+            Revenue = {{ "{:,.0f}".format(total_revenue) }}
+        </div>
+    </div>
+
+    <!-- Vehicle Types Ratio Section -->
+    <div class="ratio-section-grid">
+        <!-- Pie Chart -->
+        <div class="ratio-card">
+            <div class="section-header-red">Ratio of vehicle types</div>
+            <div class="pie-chart-container">
+                <div class="pie-chart" style="background: conic-gradient(
+                    {% for v_type, count in pie_stops.items() %}
+                    {{ colors[v_type] }} {{ pie_stops[v_type]['from'] }}deg {{ pie_stops[v_type]['to'] }}deg {{ ',' if not loop.last else '' }}
+                    {% endfor %}
+                );"></div>
+                <div class="pie-legend">
+                    {% for v_type, count in stats.items() %}
+                    <div class="legend-item"><span class="dot" style="background-color: {{ colors[v_type] }};"></span>
+                        {{ v_type }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="stats-list">
+                {% for v_type, count in stats.items() %}
+                <div class="stat-item">
+                    <span>Number of {{ v_type.lower() }}:</span>
+                    <span>{{ count }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Horizontal Bar Chart -->
+        <div class="ratio-card">
+            <div class="section-header-red">Ratio of repair categories</div>
+            <div class="horiz-chart-container">
+                {% for cat, count in category_stats.items() %}
+                <div class="horiz-bar-group">
+                    <span class="horiz-label">{{ cat }}</span>
+                    <div class="horiz-track">
+                        <div class="horiz-bar" style="width: {{ (count / total_items * 100) if total_items > 0 else 0 }}%;
+                            background-color: {{ category_colors[cat] }};"></div>
+                    </div>
+                    <span class="horiz-value">{{ count }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Management Sections -->
+    <div class="management-grid">
+        <div class="dashboard-section">
+            <h2>System Settings</h2>
+            <div class="card">
+                <form method="POST" action="{{ url_for('admin_update_settings') }}">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="max_cars">Max Cars Per Day</label>
+                            <input type="number" id="max_cars" name="max_cars" value="{{ settings.max_cars_per_day }}"
+                                required
+                                style="width: 100%; padding: 0.5rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="vat_rate">VAT Rate (%)</label>
+                            <input type="number" id="vat_rate" name="vat_rate" value="{{ settings.vat_rate }}"
+                                step="0.01" required
+                                style="width: 100%; padding: 0.5rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">Update Settings</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="dashboard-section">
+            <h2>Accessory Management</h2>
+            <div class="card">
+                {% if edit_component %}
+                <form method="POST" action="{{ url_for('admin_update_component', component_id=edit_component.id) }}"
+                    class="component-form">
+                    <div class="input-group">
+                        <input type="text" name="name" value="{{ edit_component.name }}" placeholder="Component Name"
+                            required>
+                        <div class="separator"></div>
+                        <input type="number" name="price" value="{{ edit_component.current_price }}" placeholder="Price"
+                            required>
+                    </div>
+                    <button type="submit" class="btn-add">UPDATE</button>
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn-cancel"
+                        style="margin-left: 0.5rem; text-decoration: none; color: #666; font-weight: bold; padding: 0.75rem;">CANCEL</a>
+                </form>
+                {% else %}
+                <form method="POST" action="{{ url_for('admin_add_component') }}" class="component-form">
+                    <div class="input-group">
+                        <input type="text" name="name" placeholder="Component Name" required>
+                        <div class="separator"></div>
+                        <input type="number" name="price" placeholder="Price" required>
+                    </div>
+                    <button type="submit" class="btn-add">ADD</button>
+                </form>
+                {% endif %}
+
+                <table style="margin-top: 1rem; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for comp in components %}
+                        <tr>
+                            <td>{{ comp.name }}</td>
+                            <td>{{ "{:,.0f}".format(comp.current_price) }}</td>
+                            <td style="display: flex; gap: 0.5rem; align-items: center;">
+                                <a href="{{ url_for('admin_dashboard', edit_id=comp.id) }}"
+                                    style="text-decoration: none;">✏️</a>
+                                <form method="POST"
+                                    action="{{ url_for('admin_delete_component', component_id=comp.id) }}"
+                                    style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                                    <button type="submit"
+                                        style="background:none; border:none; cursor:pointer;">🗑️</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <h3>CAR REPAIR CENTER</h3>
+    <p>Giving you peace of mind on every road "Revive your ride"</p>
+    <div class="copyright">
+        © 2025 - Car Repair Center | Service Management System v1.0
+    </div>
+</div>
+{% endblock %}

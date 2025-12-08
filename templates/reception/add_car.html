@@ -1,0 +1,222 @@
+<div class="modal-body">
+    <div class="modal-header">
+        <h2>{{ 'EDIT CUSTOMER INFORMATION' if slip else 'CUSTOMER INFORMATION' }}</h2>
+    </div>
+
+    <form method="POST"
+        action="{{ url_for('reception_add_car', slip_id=slip.id) if slip else url_for('reception_add_car') }}"
+        class="modal-form">
+        <div class="form-grid">
+            <div class="form-section">
+                <h3>Customer information</h3>
+
+                <div class="form-group-row">
+                    <label>Full name:</label>
+                    <input type="text" name="owner_name" placeholder="Enter full name..."
+                        value="{{ slip.owner_name if slip else '' }}" required>
+                </div>
+
+                <div class="form-group-row">
+                    <label>Phone number:</label>
+                    <input type="text" name="phone_number" placeholder="Enter phone number..."
+                        value="{{ slip.phone_number if slip else '' }}" required>
+                </div>
+
+                <div class="form-group-row">
+                    <label>Address:</label>
+                    <input type="text" name="address" placeholder="Enter address..."
+                        value="{{ slip.address if slip else '' }}" required>
+                </div>
+
+            </div>
+
+            <div class="form-section">
+                <h3>Vehicle information</h3>
+
+                <div class="form-group-row">
+                    <label>Vehicle type:</label>
+                    <input type="text" name="vehicle_type" placeholder="Enter vehicle type..."
+                        value="{{ slip.vehicle_type if slip else '' }}">
+                </div>
+
+                <div class="form-group-row">
+                    <label>Color:</label>
+                    <input type="text" name="color" placeholder="Enter color..."
+                        value="{{ slip.color if slip else '' }}">
+                </div>
+
+                <div class="form-group-row">
+                    <label>Number plate:</label>
+                    <input type="text" name="license_plate" placeholder="Enter number plate..."
+                        value="{{ slip.license_plate if slip else '' }}" required>
+                </div>
+            </div>
+        </div>
+        <div class="form-group-row description">
+            <label>Description error:</label>
+            <textarea name="description" placeholder="Enter note..."
+                rows="3">{{ slip.description if slip else '' }}</textarea>
+        </div>
+        <div class="form-grid">
+            <div class="form-group-inline">
+                <label>Date of receipt:</label>
+                <input type="date"
+                    value="{{ slip.reception_date.strftime('%Y-%m-%d') if slip else (now_date if now_date else '2025-01-01') }}"
+                    class="date-display" min="{{ now_date if now_date else '2025-01-01' }}">
+            </div>
+
+            <div class="form-group-inline">
+                <label>Status:</label>
+                <select name="status" class="status-select">
+                    <option value="pending" {{ 'selected' if slip and slip.status=='pending' else '' }}>Quote</option>
+                    <option value="waiting" {{ 'selected' if slip and slip.status=='waiting' else '' }}>Waiting</option>
+                    <option value="repairing" {{ 'selected' if slip and slip.status=='repairing' else '' }}>Repairing
+                    </option>
+                    <option value="complete" {{ 'selected' if slip and slip.status=='complete' else '' }}>Complete
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button type="submit" class="btn-complete">Complete</button>
+            <a href="{{ url_for('reception_home') }}" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .modal-body {
+        background-color: #E0E0E0;
+        padding: 2rem;
+        border-radius: 8px;
+        width: 100%;
+        position: relative;
+    }
+
+    .modal-header {
+        text-align: center;
+    }
+
+    .modal-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: #333;
+        text-transform: uppercase;
+        display: inline-block;
+        padding-bottom: 0.5rem;
+    }
+
+    .modal-form {
+        padding: 2rem;
+        background-color: #E0E0E0;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-section h3 {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        color: #333;
+    }
+
+    .form-group-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .form-group-row label {
+        width: 140px;
+        font-weight: normal;
+        color: #333;
+    }
+
+    .form-group-row input,
+    .form-group-row select,
+    .form-group-row textarea {
+        flex: 1;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: transparent;
+        border: 1px solid #A52A2A;
+    }
+
+    .form-group-row.description {
+        margin-top: -2rem;
+        align-items: flex-start;
+    }
+
+    .form-footer-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        padding: 0 2rem;
+    }
+
+    .form-group-inline {
+        display: flex;
+        align-items: center;
+    }
+
+    .form-group-inline label {
+        width: 140px;
+        font-weight: normal;
+        color: #333;
+    }
+
+    .form-group-inline input,
+    .form-group-inline select {
+        background: #8B0000;
+        flex: 1;
+        padding: 0.5rem;
+    }
+
+    .date-display {
+        background: transparent;
+        border: none;
+        color: white;
+    }
+
+    .status-select {
+        background: #8B0000;
+        color: white;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        width: 150px;
+    }
+
+    .modal-actions {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+    }
+
+    .btn-complete {
+        background-color: #8B0000;
+        color: white;
+        padding: 0.75rem 3rem;
+        border: none;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .btn-cancel {
+        background-color: white;
+        color: #8B0000;
+        padding: 0.75rem 3rem;
+        border: 1px solid #8B0000;
+        border-radius: 4px;
+        font-weight: bold;
+        text-decoration: none;
+        display: inline-block;
+    }
+</style>

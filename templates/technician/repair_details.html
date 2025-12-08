@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-header">
+        <h1>Repair Details</h1>
+        <a href="{{ url_for('technician_home') }}" class="back-link">← Back to Dashboard</a>
+    </div>
+
+    <div class="card">
+        <div class="detail-header">
+            <div>
+                <h2>{{ repair.license_plate }}</h2>
+                <p class="text-light">Started on {{ repair.start_date }}</p>
+            </div>
+            <span class="status-badge status-{{ repair.status }}">{{ repair.status }}</span>
+        </div>
+
+        <div class="detail-grid" style="margin-bottom: 2rem;">
+            <div class="detail-section">
+                <h3>Car & Owner</h3>
+                <div class="info-row">
+                    <span class="label">License:</span>
+                    <span class="value">{{ repair.license_plate }}</span>
+                </div>
+                <!-- Add owner info if available in query -->
+            </div>
+            <div class="detail-section">
+                <h3>Status</h3>
+                <div class="info-row">
+                    <span class="label">Status:</span>
+                    <span class="value" style="text-transform: capitalize;">{{ repair.status }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>Used Components / Services</h3>
+                <a href="{{ url_for('technician_add_item_view', repair_id=repair.repair_id) }}"
+                    class="btn-primary btn-sm">
+                    + Add Item
+                </a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ "{:,.0f}".format(item.price_at_time) }}</td>
+                        <td>{{ "{:,.0f}".format(item.price_at_time * item.quantity) }}</td>
+                        <td>
+                            <!-- Delete action -->
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: var(--text-light);">No items added yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" style="text-align: right; font-weight: bold;">Total:</td>
+                        <td colspan="2" style="font-weight: bold; color: var(--primary-color);">{{
+                            "{:,.0f}".format(total_cost) }} VND</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="form-actions" style="margin-top: 2rem; text-align: right;">
+            <form method="POST" action="{{ url_for('technician_finish_repair', repair_id=repair.repair_id) }}">
+                <button type="submit" class="btn-primary" style="background-color: var(--success);">Finish
+                    Repair</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .back-link {
+        color: var(--text-light);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+
+    .info-row {
+        display: flex;
+        margin-bottom: 0.75rem;
+    }
+
+    .label {
+        font-weight: 600;
+        width: 100px;
+        color: var(--secondary-color);
+    }
+
+    .value {
+        flex: 1;
+        color: var(--text-color);
+    }
+
+    .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,197 @@
+<div class="modal-body">
+    <div class="modal-header">
+        <h2>DETAILED INFORMATION - TNX{{ "%03d" | format(slip.id) }}</h2>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-section">
+            <h3>Customer information</h3>
+            <div class="info-row">
+                <span class="label">Name:</span>
+                <span class="value">{{ slip.owner_name }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Phone number:</span>
+                <span class="value">{{ slip.phone_number }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Address:</span>
+                <span class="value">{{ slip.address }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Description error:</span>
+                <span class="value">{{ slip.description }}</span>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Vehicle information</h3>
+            <div class="info-row">
+                <span class="label">Vehicle type:</span>
+                <span class="value">{{ slip.vehicle_type }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Car color:</span>
+                <span class="value">{{ slip.color }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Number plate:</span>
+                <span class="value">{{ slip.license_plate }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-table-container">
+        <table class="detail-table">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Description error</th>
+                    <th>Service</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>TNX{{ "%03d" | format(slip.id) }}</td>
+                    <td>{{ slip.description }}</td>
+                    <td>{{ slip.vehicle_type }}</td>
+                    <td>
+                        <div class="status-cell" style="justify-content: center;">
+                            {% if slip.status == 'pending' %}
+                            <span class="status-icon">
+                                <img src="{{ url_for('static', filename='images/time.png') }}" alt="Pending"
+                                    style="width: 20px; height: auto;">
+                            </span> Waiting
+                            {% elif slip.status == 'repairing' %}
+                            <span class="status-icon">
+                                <img src="{{ url_for('static', filename='images/wrench.png') }}" alt="Pending"
+                                    style="width: 20px; height: auto;">
+                            </span> Repairing
+                            {% elif slip.status == 'completed' %}
+                            <span class="status-icon">
+                                <img src="{{ url_for('static', filename='images/approved.png') }}" alt="Pending"
+                                    style="width: 20px; height: auto;">
+                            </span> Complete
+                            {% else %}
+                            {{ slip.status }}
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal-actions">
+        <a href="{{ url_for('reception_add_car', slip_id=slip.id) }}" class="btn-update">Update More</a>
+        <a href="{{ url_for('reception_home') }}" class="btn-close" style="display:none;">Close</a>
+    </div>
+
+    <!-- Close area -->
+    <a href="{{ url_for('reception_home') }}" class="close-overlay-link"></a>
+</div>
+
+<style>
+    .modal-body {
+        background-color: #E0E0E0;
+        padding: 2rem;
+        border-radius: 8px;
+        width: 100%;
+        position: relative;
+    }
+
+    .modal-header {
+        text-align: center;
+    }
+
+    .modal-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: #333;
+        text-transform: uppercase;
+        display: inline-block;
+        padding-bottom: 0.5rem;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-section h3 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+
+    .info-row {
+        margin-bottom: 0.5rem;
+        display: flex;
+    }
+
+    .info-row .label {
+        width: 150px;
+        color: #555;
+    }
+
+    .info-row .value {
+        font-weight: 500;
+        color: #333;
+    }
+
+    .detail-table-container {
+        background: white;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 2rem;
+        border: 1px solid #999;
+    }
+
+    .detail-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .detail-table th {
+        background-color: #F0F0F0;
+        padding: 0.75rem;
+        text-align: center;
+        border-bottom: 1px solid #999;
+        border-right: 1px solid #999;
+    }
+
+    .detail-table td {
+        padding: 1rem;
+        text-align: center;
+        border-right: 1px solid #999;
+    }
+
+    .btn-update {
+        background-color: #8B0000;
+        color: white;
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+        display: block;
+        margin: 0 auto;
+        text-decoration: none;
+        text-align: center;
+        width: fit-content;
+    }
+
+    /* Click outside to close helper */
+    .close-overlay-link {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        cursor: default;
+    }
+</style>
