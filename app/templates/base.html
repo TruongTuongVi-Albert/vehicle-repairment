@@ -18,24 +18,24 @@
             </div>
             <ul class="nav-links">
                 {% if session.get('role') == 'admin' %}
-                <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
                 {% endif %}
                 {% if session.get('role') == 'reception' %}
-                <li><a href="{{ url_for('reception_home') }}">Reception</a></li>
+                <li><a href="{{ url_for('reception.home') }}">Reception</a></li>
                 {% endif %}
                 {% if session.get('role') == 'technician' %}
-                <li><a href="{{ url_for('technician_home') }}">Tasks</a></li>
+                <li><a href="{{ url_for('technician.home') }}">Tasks</a></li>
                 {% endif %}
                 {% if session.get('role') == 'cashier' %}
-                <li><a href="{{ url_for('cashier_home') }}">Invoices</a></li>
+                <li><a href="{{ url_for('cashier.home') }}">Invoices</a></li>
                 {% endif %}
-                <li><a href="{{ url_for('logout') }}" class="logout-btn">Logout</a></li>
+                <li><a href="{{ url_for('main.logout') }}" class="logout-btn">Logout</a></li>
             </ul>
         </nav>
         {% endif %}
 
         <main class="content"
-            style="background-image: url('{{ url_for('static', filename='images/background.png') }}');">
+            style="background-image: url('{{ url_for('static', filename='images/background.png') }}'); background-size: cover; background-repeat: no-repeat;">
             {% with messages = get_flashed_messages() %}
             {% if messages %}
             <div class="flash-messages">

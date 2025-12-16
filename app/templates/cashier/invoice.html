@@ -450,7 +450,7 @@
 
     {% if repair.status == 'completed' %}
     <div class="pay-btn-container">
-        <form method="POST" action="{{ url_for('cashier_process_payment', repair_id=repair.repair_id) }}">
+        <form method="POST" action="{{ url_for('cashier.process_payment', repair_id=repair.repair_id) }}">
             <input type="hidden" name="total_amount" value="{{ total_amount }}">
             <button type="submit" class="pay-btn">Pay bill</button>
         </form>

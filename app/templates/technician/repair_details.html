@@ -4,7 +4,7 @@
 <div class="form-container">
     <div class="form-header">
         <h1>Repair Details</h1>
-        <a href="{{ url_for('technician_home') }}" class="back-link">← Back to Dashboard</a>
+        <a href="{{ url_for('technician.home') }}" class="back-link">← Back to Dashboard</a>
     </div>
 
     <div class="card">
@@ -37,7 +37,7 @@
         <div class="table-container">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <h3>Used Components / Services</h3>
-                <a href="{{ url_for('technician_add_item_view', repair_id=repair.repair_id) }}"
+                <a href="{{ url_for('technician.add_item_view', repair_id=repair.repair_id) }}"
                     class="btn-primary btn-sm">
                     + Add Item
                 </a>
@@ -80,7 +80,7 @@
         </div>
 
         <div class="form-actions" style="margin-top: 2rem; text-align: right;">
-            <form method="POST" action="{{ url_for('technician_finish_repair', repair_id=repair.repair_id) }}">
+            <form method="POST" action="{{ url_for('technician.finish_repair', repair_id=repair.repair_id) }}">
                 <button type="submit" class="btn-primary" style="background-color: var(--success);">Finish
                     Repair</button>
             </form>

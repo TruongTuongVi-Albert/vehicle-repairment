@@ -65,9 +65,9 @@
                     <td>{{ "{:,.0f}".format(item.labor_fee) }}</td>
                     {% if repair.status == 'repairing' or repair.status == 'pending' or repair.status == 'waiting' %}
                     <td style="display: flex; gap: 0.5rem; justify-content: center; align-items: center;">
-                        <a href="{{ url_for('technician_edit_item_view', repair_id=repair.repair_id, item_id=item.id) }}"
+                        <a href="{{ url_for('technician.edit_item_view', repair_id=repair.repair_id, item_id=item.id) }}"
                             style="text-decoration: none;">✏️</a>
-                        <form method="POST" action="{{ url_for('technician_delete_item', item_id=item.id) }}"
+                        <form method="POST" action="{{ url_for('technician.delete_item', item_id=item.id) }}"
                             onsubmit="return confirm('Are you sure you want to delete this item?');"
                             style="display:inline;">
                             <button type="submit"
@@ -87,14 +87,14 @@
 
     <div class="modal-actions">
         {% if repair.status == 'pending' or repair.status == 'waiting' %}
-        <form action="{{ url_for('technician_start_repair', slip_id=repair.reception_id) }}" method="POST">
+        <form action="{{ url_for('technician.start_repair', slip_id=repair.reception_id) }}" method="POST">
             <button type="submit" class="btn-create">Create more</button>
         </form>
         <button class="btn-complete" style="opacity: 0.5; cursor: not-allowed;" disabled>Complete</button>
         {% elif repair.status == 'repairing' %}
-        <a href="{{ url_for('technician_add_item_view', repair_id=repair.repair_id) }}" class="btn-create">Create
+        <a href="{{ url_for('technician.add_item_view', repair_id=repair.repair_id) }}" class="btn-create">Create
             more</a>
-        <form action="{{ url_for('technician_finish_repair', repair_id=repair.repair_id) }}" method="POST"
+        <form action="{{ url_for('technician.finish_repair', repair_id=repair.repair_id) }}" method="POST"
             style="display:inline;">
             <button type="submit" class="btn-complete">Complete</button>
         </form>
@@ -102,7 +102,7 @@
     </div>
 
     <!-- Close area -->
-    <a href="{{ url_for('technician_home') }}" class="close-overlay-link"></a>
+    <a href="{{ url_for('technician.home') }}" class="close-overlay-link"></a>
 </div>
 
 <style>

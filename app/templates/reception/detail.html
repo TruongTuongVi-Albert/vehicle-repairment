@@ -84,12 +84,12 @@
     </div>
 
     <div class="modal-actions">
-        <a href="{{ url_for('reception_add_car', slip_id=slip.id) }}" class="btn-update">Update More</a>
-        <a href="{{ url_for('reception_home') }}" class="btn-close" style="display:none;">Close</a>
+        <a href="{{ url_for('reception.add_car', slip_id=slip.id) }}" class="btn-update">Update More</a>
+        <a href="{{ url_for('reception.home') }}" class="btn-close" style="display:none;">Close</a>
     </div>
 
     <!-- Close area -->
-    <a href="{{ url_for('reception_home') }}" class="close-overlay-link"></a>
+    <a href="{{ url_for('reception.home') }}" class="close-overlay-link"></a>
 </div>
 
 <style>

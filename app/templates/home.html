@@ -207,7 +207,7 @@
     </div>
 
     <div class="header-actions">
-        <a href="{{ url_for('logout') }}"
+        <a href="{{ url_for('main.logout') }}"
             style="text-decoration: none; color: white; display: flex; align-items: center; gap: 5px;">
             Logout <span style="font-size: 1.2rem;">➜</span>
         </a>
@@ -218,7 +218,7 @@
     <div class="modules-grid">
         <!-- Technician: Light -->
         {% if session.get('role') == 'technician' or session.get('role') == 'admin' %}
-        <a href="{{ url_for('technician_home') }}" class="module-card card-light">
+        <a href="{{ url_for('technician.home') }}" class="module-card card-light">
             <div class="module-icon">
                 <img src="{{ url_for('static', filename='images/technician.png') }}" alt="Technician">
             </div>
@@ -228,7 +228,7 @@
 
         <!-- Reception: Red -->
         {% if session.get('role') == 'reception' or session.get('role') == 'admin' %}
-        <a href="{{ url_for('reception_home') }}" class="module-card card-red">
+        <a href="{{ url_for('reception.home') }}" class="module-card card-red">
             <div class="module-icon">
                 <img src="{{ url_for('static', filename='images/reception.png') }}" alt="Reception">
             </div>
@@ -238,7 +238,7 @@
 
         <!-- Cashier: Red -->
         {% if session.get('role') == 'cashier' or session.get('role') == 'admin' %}
-        <a href="{{ url_for('cashier_home') }}" class="module-card card-red">
+        <a href="{{ url_for('cashier.home') }}" class="module-card card-red">
             <div class="module-icon">
                 <img src="{{ url_for('static', filename='images/cashier.png') }}" alt="Cashier">
             </div>
@@ -248,7 +248,7 @@
 
         <!-- Manager/Admin: Dark/Light -->
         {% if session.get('role') == 'admin' %}
-        <a href="{{ url_for('admin_dashboard') }}" class="module-card card-light">
+        <a href="{{ url_for('admin.dashboard') }}" class="module-card card-light">
             <div class="module-icon">
                 <img src="{{ url_for('static', filename='images/fund.png') }}" alt="Admin">
             </div>

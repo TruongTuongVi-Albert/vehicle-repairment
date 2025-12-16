@@ -22,6 +22,7 @@
         display: flex;
         flex-direction: column;
         background-color: white;
+        background-image: unset !important;
     }
 
     /* Header */
@@ -217,14 +218,14 @@
         </div>
 
         <div class="filter-buttons">
-            <a href="{{ url_for('cashier_home', filter='completed' if current_filter != 'completed' else None) }}"
+            <a href="{{ url_for('cashier.home', filter='completed' if current_filter != 'completed' else None) }}"
                 class="filter-btn {{ 'active' if current_filter == 'completed' }}">
                 <span class="status-icon">
                     <img src="{{ url_for('static', filename='images/approved.png') }}" alt="Complete"
                         style="width: 20px; height: auto;">
                 </span> Complete </a>
             </a>
-            <a href="{{ url_for('cashier_home', filter='paid' if current_filter != 'paid' else None) }}"
+            <a href="{{ url_for('cashier.home', filter='paid' if current_filter != 'paid' else None) }}"
                 class="filter-btn {{ 'active' if current_filter == 'paid' }}">
                 <span class="status-icon">
                     <img src="{{ url_for('static', filename='images/paid.png') }}" alt="Complete"
@@ -251,7 +252,7 @@
         </thead>
         <tbody>
             {% for slip in completed_slips %}
-            <tr onclick="window.location.href='{{ url_for('cashier_invoice', repair_id=slip.repair_id) }}'"
+            <tr onclick="window.location.href='{{ url_for('cashier.invoice', repair_id=slip.repair_id) }}'"
                 style="cursor: pointer;">
                 <td>{{ loop.index }}</td>
                 <td>TNX{{ "%03d" | format(slip.id) }}</td>

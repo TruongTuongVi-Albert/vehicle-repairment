@@ -4,7 +4,7 @@
     </div>
 
     <form method="POST"
-        action="{{ url_for('technician_update_item', item_id=edit_item.id) if edit_item else url_for('technician_add_item', repair_id=repair.repair_id) }}">
+        action="{{ url_for('technician.update_item', item_id=edit_item.id) if edit_item else url_for('technician.add_item', repair_id=repair.repair_id) }}">
         <div class="add-item-form">
             <div class="form-row">
                 <label>Category:</label>
@@ -43,7 +43,7 @@
 
         <div class="add-item-actions">
             <button type="submit" class="btn-save">{{ 'Update' if edit_item else 'Save' }}</button>
-            <a href="{{ url_for('technician_view_detail', slip_id=repair.repair_id) }}" class="btn-cancel">Cancel</a>
+            <a href="{{ url_for('technician.view_detail', slip_id=repair.repair_id) }}" class="btn-cancel">Cancel</a>
         </div>
     </form>
 </div>

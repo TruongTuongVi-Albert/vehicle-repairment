@@ -46,13 +46,13 @@
     </div>
 
     <div class="modal-actions">
-        <form action="{{ url_for('technician_start_repair', slip_id=slip.id) }}" method="POST">
+        <form action="{{ url_for('technician.start_repair', slip_id=slip.id) }}" method="POST">
             <button type="submit" class="btn-create">Start Repair</button>
         </form>
     </div>
 
     <!-- Close area -->
-    <a href="{{ url_for('technician_home') }}" class="close-overlay-link"></a>
+    <a href="{{ url_for('technician.home') }}" class="close-overlay-link"></a>
 </div>
 
 <style>

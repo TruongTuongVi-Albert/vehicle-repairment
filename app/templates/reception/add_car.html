@@ -4,7 +4,7 @@
     </div>
 
     <form method="POST"
-        action="{{ url_for('reception_add_car', slip_id=slip.id) if slip else url_for('reception_add_car') }}"
+        action="{{ url_for('reception.add_car', slip_id=slip.id) if slip else url_for('reception.add_car') }}"
         class="modal-form">
         <div class="form-grid">
             <div class="form-section">
@@ -80,7 +80,7 @@
 
         <div class="modal-actions">
             <button type="submit" class="btn-complete">Complete</button>
-            <a href="{{ url_for('reception_home') }}" class="btn-cancel">Cancel</a>
+            <a href="{{ url_for('reception.home') }}" class="btn-cancel">Cancel</a>
         </div>
     </form>
 </div>

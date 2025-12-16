@@ -24,6 +24,7 @@
         display: flex;
         flex-direction: column;
         background-color: white;
+        background-image: unset !important;
     }
 
     /* Header */
@@ -299,7 +300,6 @@
         padding: 2rem;
         background-color: #C0C0C0;
         border-radius: 4px;
-        height: 300px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -436,7 +436,7 @@
     <div class="dashboard-header">
         <h1>Statistics for {{ filter.month }}/{{ filter.year }}</h1>
 
-        <form method="GET" action="{{ url_for('admin_dashboard') }}" class="filter-form">
+        <form method="GET" action="{{ url_for('admin.dashboard') }}" class="filter-form">
             <div class="filter-group">
                 <label>Day:</label>
                 <input type="number" name="day" value="{{ filter.day if filter.day else '' }}" placeholder="---">
@@ -525,7 +525,7 @@
         <div class="dashboard-section">
             <h2>System Settings</h2>
             <div class="card">
-                <form method="POST" action="{{ url_for('admin_update_settings') }}">
+                <form method="POST" action="{{ url_for('admin.update_settings') }}">
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="max_cars">Max Cars Per Day</label>
@@ -549,7 +549,7 @@
             <h2>Accessory Management</h2>
             <div class="card">
                 {% if edit_component %}
-                <form method="POST" action="{{ url_for('admin_update_component', component_id=edit_component.id) }}"
+                <form method="POST" action="{{ url_for('admin.update_component', component_id=edit_component.id) }}"
                     class="component-form">
                     <div class="input-group">
                         <input type="text" name="name" value="{{ edit_component.name }}" placeholder="Component Name"
@@ -559,11 +559,11 @@
                             required>
                     </div>
                     <button type="submit" class="btn-add">UPDATE</button>
-                    <a href="{{ url_for('admin_dashboard') }}" class="btn-cancel"
+                    <a href="{{ url_for('admin.dashboard') }}" class="btn-cancel"
                         style="margin-left: 0.5rem; text-decoration: none; color: #666; font-weight: bold; padding: 0.75rem;">CANCEL</a>
                 </form>
                 {% else %}
-                <form method="POST" action="{{ url_for('admin_add_component') }}" class="component-form">
+                <form method="POST" action="{{ url_for('admin.add_component') }}" class="component-form">
                     <div class="input-group">
                         <input type="text" name="name" placeholder="Component Name" required>
                         <div class="separator"></div>
@@ -587,10 +587,10 @@
                             <td>{{ comp.name }}</td>
                             <td>{{ "{:,.0f}".format(comp.current_price) }}</td>
                             <td style="display: flex; gap: 0.5rem; align-items: center;">
-                                <a href="{{ url_for('admin_dashboard', edit_id=comp.id) }}"
+                                <a href="{{ url_for('admin.dashboard', edit_id=comp.id) }}"
                                     style="text-decoration: none;">✏️</a>
                                 <form method="POST"
-                                    action="{{ url_for('admin_delete_component', component_id=comp.id) }}"
+                                    action="{{ url_for('admin.delete_component', component_id=comp.id) }}"
                                     style="display:inline;" onsubmit="return confirm('Are you sure?');">
                                     <button type="submit"
                                         style="background:none; border:none; cursor:pointer;">🗑️</button>
