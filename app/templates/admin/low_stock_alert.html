@@ -1,0 +1,858 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #F5F5F5;
+        margin: 0;
+    }
+
+    .app-container {
+        flex-direction: column;
+        min-height: 100vh;
+        display: flex;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .content {
+        padding: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+    }
+
+/* Header */
+    .top-header {
+        background-color: #990000;
+        color: white;
+        padding: 0.5rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 60px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        background-color: #FFD700;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .center-logo img {
+        height: 40px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+        font-size: 1.2rem;
+    }
+
+    /* Main Content */
+    .main-body {
+        flex: 1;
+        padding: 2rem 3rem;
+        overflow-y: auto;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .alert-icon {
+        font-size: 2rem;
+    }
+
+
+    /* Summary Cards */
+    .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        align-items: stretch; /* ép card cao bằng nhau */
+    }
+
+    .summary-card {
+        background: #E8E8E8;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        text-align: center;
+        border-left: 4px solid;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* dàn đều nội dung */
+    }
+
+    .summary-form {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        align-items: center;
+    }
+
+
+    .summary-card.critical {
+        border-left-color: #DC3545;
+    }
+
+    .summary-card.warning {
+        border-left-color: #FFA500;
+    }
+
+    .summary-card.info {
+        border: 2px solid #990000;
+
+
+    }
+
+    .summary-value {
+        font-size: 2.8rem;
+        font-weight: 700;
+    }
+
+    .summary-label {
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .threshold-card {
+        background: #FFFFFF;
+        border: 2px solid #990000;
+        box-shadow: 0 6px 18px rgba(153,0,0,0.15);
+    }
+
+    .threshold-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 1.2rem;
+        gap: 1rem;
+    }
+
+
+    .threshold-input-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .threshold-input-group input {
+        width: 90px;
+        padding: 0.6rem;
+        font-size: 1rem;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        text-align: center;
+    }
+
+
+    .threshold-input-group input:focus {
+        outline: none;
+        border-color: #FFA500;
+        box-shadow: 0 0 0 3px rgba(255,165,0,0.2);
+    }
+
+    .threshold-input-group .unit {
+        font-weight: bold;
+        color: #555;
+    }
+
+    .btn-update {
+        background: #940719;
+        color: white;
+        padding: 0.55rem 1.3rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-update:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(153,0,0,0.4);
+    }
+
+
+    /* Components Table */
+    .components-section {
+        margin-top: 1.5rem;
+        background: #dedede;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .section-title {
+        margin-top: 4rem;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .header-underline {
+        width: 100%;
+        height: 2px;
+        background-color: #990000;
+        margin-top: 0.5rem;
+        border-radius: 2px;
+    }
+
+    .components-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .components-table thead {
+        background-color: #f5f5f5;
+    }
+
+    .components-table th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: bold;
+        border-bottom: 2px solid #990000;
+    }
+
+    .components-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .components-table tbody tr {
+        transition: background-color 0.2s;
+    }
+
+    .components-table tbody tr:hover {
+        background-color: #f9f9f9;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 0.85rem;
+        color: white;
+        display: inline-block;
+    }
+
+    .stock-value {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .stock-critical {
+        color: #DC3545;
+    }
+
+    .stock-low {
+        color: #FFA500;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #666;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Components Table List*/
+    .components-section-list {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+
+    .table-header-list {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .section-title-list {
+        color: #000;
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+
+    .btn-add-component-list {
+        background-color: #990000;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-add-component-list:hover {
+        background-color: #cc0000;
+    }
+
+    /* Table Styles */
+    .components-table-list {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+    }
+
+    .components-table-list thead {
+        background-color: #f5f5f5;
+    }
+
+    .components-table-list th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: bold;
+        border-bottom: 2px solid #990000;
+    }
+
+    .components-table-list td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .components-table-list tbody tr:hover {
+        background-color: #f9f9f9;
+    }
+
+    .components-table-list input[type="number"] {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        text-align: right;
+    }
+
+    .btn-update-price-list {
+        background-color: #990000;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-top: 1rem;
+        width: 100%;
+    }
+
+    .btn-update-price-list:hover {
+        background-color: #cc0000;
+    }
+
+
+    .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    }
+
+    .modal-box {
+        background: #f5f5f5;
+        padding: 2rem;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 700px;
+    }
+
+    .modal-box h3 {
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.3rem
+    }
+
+    .modal-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    }
+
+    .btn-add-row {
+        background: transparent;
+        border: 2px solid #990000;
+        color: #990000;
+        padding: 0.4rem 0.9rem;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-add-row:hover {
+        background-color: #990000;
+        color: white;
+    }
+
+    .modal-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .modal-table th, .modal-table td {
+        padding: 0.5rem;
+    }
+
+    .modal-table input {
+        width: 100%;
+        padding: 0.4rem;
+    }
+
+    .btn-remove-row {
+    background: transparent;
+    margin-left: 1.5rem;
+    border: none;
+    color: #DC3545;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    }
+
+    .btn-remove-row:hover {
+        transform: scale(1.2);
+        background: #fffff;
+    }
+
+    .modal-actions {
+        margin-top: 1rem;
+        display: flex;
+        justify-content: space-between;
+    }
+
+
+
+    /* Alert Messages */
+    .alert {
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        animation: slideDown 0.3s ease;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .summary-cards {
+            grid-template-columns: 1fr;
+        }
+        
+        .page-header {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<div class="top-header">
+    <div class="user-info">
+        <div class="user-avatar">
+            <img src="https://ui-avatars.com/api/?name={{ session.get('username', 'User') }}&background=random"
+                 alt="User" style="border-radius: 50%; width: 100%; height: 100%;">
+        </div>
+        <span>Hello, {{ session.get('username', 'User') }}</span>
+    </div>
+
+    <div class="center-logo">
+        <a href="{{ url_for('admin.accessories') }}">
+            <img src="{{ url_for('static', filename='images/logo-white.png') }}"
+                 alt="CRC">
+        </a>
+    </div>
+
+
+    <div class="header-actions">
+        <a href="{{ url_for('main.logout') }}">
+            <img src="{{ url_for('static', filename='images/logout.png') }}"
+                 alt="Logout"
+                 style="width: 30px; height: 32px; cursor: pointer;">
+        </a>
+
+    </div>
+</div>
+
+<div class="main-body">
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+
+        <!-- THRESHOLD CARD -->
+        <div class="summary-card threshold-card">
+            <form method="POST"
+                  action="{{ url_for('admin.update_stock_threshold') }}"
+                  class="summary-form">
+
+                <div class="summary-label">Low Stock Threshold</div>
+
+                <div class="threshold-row">
+                    <div class="threshold-input-group">
+                        <input type="number"
+                               name="threshold"
+                               value="{{ threshold }}"
+                               min="0"
+                               max="100"
+                               required>
+                        <span class="unit">units</span>
+                    </div>
+
+                    <button type="submit" class="btn-update">
+                        Update
+                    </button>
+                </div>
+            </form>
+        </div>
+
+
+        <div class="summary-card critical">
+            <div class="summary-value" style="color:#DC3545">
+                {{ components|selectattr('status','equalto','out')|list|length }}
+            </div>
+            <div class="summary-label">Out of Stock</div>
+        </div>
+
+        <div class="summary-card warning">
+            <div class="summary-value" style="color:#FFA500">
+                {{ components|selectattr('status','equalto','low')|list|length }}
+            </div>
+            <div class="summary-label">Low Stock</div>
+        </div>
+
+    </div>
+
+
+    <!-- Components Table -->
+
+    <div class="section-title">Low Stock Components</div>
+    <div class="header-underline"></div>
+
+    <div class="components-section">
+
+        {% if components %}
+        <table class="components-table">
+            <thead>
+            <tr>
+                <th>Component Name</th>
+                <th style="text-align: center;">Current Stock</th>
+                <th style="text-align: center;">Usage (30 days)</th>
+                <th style="text-align: right;">Unit Price</th>
+                <th style="text-align: center;">Status</th>
+                <th style="text-align: center;">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for comp in components %}
+            <tr>
+                <td><strong>{{ comp.name }}</strong></td>
+                <td style="text-align: center;">
+                        <span class="stock-value {{ 'stock-critical' if comp.status == 'out_of_stock' or comp.status == 'critical' else 'stock-low' }}">
+                            {{ comp.stock_quantity }}
+                        </span>
+                </td>
+                <td style="text-align: center;">{{ comp.recent_usage }} units</td>
+                <td style="text-align: right;">{{ "{:,.0f}".format(comp.current_price) }} VND</td>
+                <td style="text-align: center;">
+                        <span class="status-badge" style="background-color: {{ comp.status_color }};">
+                            {{ comp.status_text }}
+                        </span>
+                </td>
+                <td style="text-align: center;">
+                    <a href="{{ url_for('admin.accessories') }}"
+                       style="color: #990000; font-weight: bold; text-decoration: none;">
+                        Restock →
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">✓</div>
+            <h3>All Components are Well Stocked!</h3>
+            <p>No components are below the threshold of {{ threshold }} units.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- List of Components -->
+    <div class="components-section-list">
+        <div class="table-header-list">
+            <button class="btn-add-component-list" onclick="openAddNewComponentModal()">
+                Add new...
+            </button>
+            <div class="section-title-list" style="margin: 0; border: none;">List of components</div>
+            <button class="btn-add-component-list" onclick="openImportModal()">
+                Import goods
+            </button>
+        </div>
+
+        <form method="POST" action="{{ url_for('admin.batch_update_prices') }}">
+            <table class="components-table-list">
+                <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Import</th>
+                    <th>Used</th>
+                    <th>Inventory quantity</th>
+                    <th>Unit price (VND)</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if components %}
+                {% for comp in components %}
+                <tr>
+                    <td>{{ comp.id }}</td>
+
+                    <td>{{ comp.name }}</td>
+
+                    <td style="text-align: center;">
+                        —
+                    </td>
+
+                    <td style="text-align: center;">
+                        —
+                    </td>
+
+                    <td style="text-align: center;">
+                        {{ comp.stock_quantity }}
+                    </td>
+
+                    <td>
+                        <input type="number"
+                               name="price_{{ comp.id }}"
+                               value="{{ (comp.current_price}}"
+                               step="1000"
+                               min="0">
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align:center;color:#666;padding:2rem;">
+                        No components available
+                    </td>
+                </tr>
+                {% endif %}
+                </tbody>
+
+            </table>
+
+            {% if components %}
+            <button type="submit" class="btn-update-price-list">Update price</button>
+            {% endif %}
+        </form>
+
+    </div>
+
+    <!-- ADD COMPONENT MODAL -->
+    <div id="addNewComponentModal" class="modal-overlay" style="display:none;">
+        <div class="modal-box">
+            <h3>ADD NEW COMPONENT</h3>
+
+            <form method="POST" action="{{ url_for('admin.add_component') }}">
+
+                <div class="form-group">
+                    <label>Component Name</label>
+                    <input type="text" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Unit Price (VND)</label>
+                    <input type="number" name="current_price" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Initial Stock Quantity</label>
+                    <input type="number" name="stock_quantity" min="0" value="0">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn-confirm">Confirm</button>
+                    <button type="button" class="btn-cancel" onclick="closeAddNewComponentModal()">Cancel</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ADD COMPONENT MODAL IMPORT -->
+    <div id="addComponentModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header-row">
+                <h3>Import Components</h3>
+                <button type="button" class="btn-add-row" onclick="addRow()">Add row</button>
+            </div>
+
+
+            <form id="importForm">
+                <table class="modal-table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody id="componentRows">
+                    <tr>
+                        <td><input type="text" name="name[]" required></td>
+                        <td><input type="number" name="quantity[]" min="1" required></td>
+                        <td>
+                            <button type="button" class="btn-remove-row" onclick="removeRow(this)">✕</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn-update">Confirm</button>
+                    <button type="button" onclick="closeImportModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-hide alerts after 5 seconds
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.transition = 'opacity 0.5s, transform 0.5s';
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-20px)';
+                setTimeout(() => alert.remove(), 500);
+            }, 5000);
+        });
+    });
+
+
+function openImportModal() {
+    document.getElementById('addComponentModal').style.display = 'flex';
+}
+
+function closeImportModal() {
+    document.getElementById('addComponentModal').style.display = 'none';
+}
+
+function addRow() {
+    const row = `
+        <tr>
+            <td><input type="text" name="name[]" required></td>
+            <td><input type="number" name="quantity[]" min="1" required></td>
+            <td><button type="button" class="btn-remove-row" onclick="removeRow(this)">✕</button></td>
+        </tr>`;
+    document.getElementById('componentRows').insertAdjacentHTML('beforeend', row);
+}
+
+function removeRow(btn) {
+    btn.closest('tr').remove();
+}
+
+function openAddNewComponentModal() {
+    document.getElementById('addNewComponentModal').style.display = 'flex';
+}
+
+function closeAddNewComponentModal() {
+    document.getElementById('addNewComponentModal').style.display = 'none';
+}
+
+document.getElementById('importForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    fetch('{{ url_for("admin.import_components") }}', {
+        method: 'POST',
+        body: new FormData(this)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert('Import successful!');
+            location.reload();
+        } else {
+            alert(data.message);
+        }
+    });
+});
+
+
+</script>
+{% endblock %}

@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, Text, ForeignKey, Float, Enum, DateTime
 from sqlalchemy.orm import relationship
-from app import db
+from app import db, app
 from flask_login import UserMixin
 from enum import Enum as PyEnum
 from datetime import datetime
@@ -142,31 +142,30 @@ class SystemSetting(db.Model):
 
 
 # Initialize database with seed data
-if __name__ == '__main__':
-    from app import app
-    with app.app_context():
-        db.create_all()
-        
-        # Add default users if not exist
-        if not User.query.filter_by(username='admin').first():
-            users = [
-                User(username='admin', password='123', role='admin', full_name='Administrator'),
-                User(username='reception', password='123', role='reception', full_name='Receptionist A'),
-                User(username='tech', password='123', role='technician', full_name='Technician B'),
-                User(username='cashier', password='123', role='cashier', full_name='Cashier C'),
-            ]
-            db.session.add_all(users)
-            db.session.commit()
-            print("Default users created.")
-        
-        # Add default settings if not exist
-        if not SystemSetting.query.filter_by(setting_key='max_cars_per_day').first():
-            settings = [
-                SystemSetting(setting_key='max_cars_per_day', setting_value='30'),
-                SystemSetting(setting_key='vat_rate', setting_value='10'),
-            ]
-            db.session.add_all(settings)
-            db.session.commit()
-            print("Default settings created.")
-        
-        print("Database initialized.")
+# if __name__ == '__main__':
+#     with app.app_context():
+#         db.create_all()
+#
+#         # Add default users if not exist
+#         if not User.query.filter_by(username='admin').first():
+#             users = [
+#                 User(username='admin', password='123', role='admin', full_name='Administrator'),
+#                 User(username='reception', password='123', role='reception', full_name='Receptionist A'),
+#                 User(username='tech', password='123', role='technician', full_name='Technician B'),
+#                 User(username='cashier', password='123', role='cashier', full_name='Cashier C'),
+#             ]
+#             db.session.add_all(users)
+#             db.session.commit()
+#             print("Default users created.")
+#
+#         # Add default settings if not exist
+#         if not SystemSetting.query.filter_by(setting_key='max_cars_per_day').first():
+#             settings = [
+#                 SystemSetting(setting_key='max_cars_per_day', setting_value='30'),
+#                 SystemSetting(setting_key='vat_rate', setting_value='10'),
+#             ]
+#             db.session.add_all(settings)
+#             db.session.commit()
+#             print("Default settings created.")
+#
+#         print("Database initialized.")

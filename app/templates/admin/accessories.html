@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #F5F5F5;
+        margin: 0;
+    }
+
+    .app-container {
+        flex-direction: column;
+        height: 100vh;
+        display: flex;
+    }
+
+    /* Hide sidebar if it exists in base, or override layout */
+    .sidebar {
+        display: none;
+    }
+
+    .content {
+        padding: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+        background-image: unset !important;
+    }
+
+    /* Header */
+    .top-header {
+        background-color: #990000;
+        color: white;
+        padding: 0.5rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 60px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        background-color: #FFD700;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .center-logo img {
+        height: 40px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .header-actions a {
+        position: relative;
+        display: inline-block;
+    }
+
+    .header-actions img {
+        width: 28px;
+        height: 28px;
+        cursor: pointer;
+        filter: brightness(0) invert(1);
+        transition: transform 0.3s ease;
+    }
+
+    .header-actions a:hover img {
+        transform: scale(1.1);
+    }
+
+/* Notification Bell */
+    .notification-bell {
+        position: relative;
+    }
+
+    .notification-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: #FF3333;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: bold;
+        border: 2px solid #990000;
+        padding: 0 4px;
+        animation: pulse 2s infinite;
+    }
+
+    .notification-badge.zero {
+        display: none;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+
+    /* Main Content */
+    .main-body {
+        flex: 1;
+        padding: 2rem 3rem;
+        overflow-y: auto;
+    }
+
+    .page-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        color: #333;
+    }
+
+    /* Tab Navigation */
+    .tab-nav {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .tab-btn {
+        padding: 0.75rem 2rem;
+        border: 2px solid #cc0000;
+        background-color: white;
+        color: #666;
+        font-weight: bold;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.3s;
+    }
+
+    .tab-btn.active {
+        background-color: #990000;
+        color: white;
+    }
+
+    .tab-btn:hover {
+        background-color: #cc0000;
+        color: white;
+    }
+
+    /* Quantity Section */
+    .quantity-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #990000;
+    }
+
+    .bar-chart-container {
+        background-color: #C0C0C0;
+        padding: 2rem;
+        border-radius: 4px;
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+    }
+
+    /* Pie Charts Grid */
+    .pie-charts-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .pie-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .pie-chart-placeholder {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-color: #C0C0C0;
+        margin: 2rem auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+    }
+
+
+
+    /* Alert */
+    .alert {
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .pie-charts-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="top-header">
+    <div class="user-info">
+        <div class="user-avatar">
+            <img src="https://ui-avatars.com/api/?name={{ session.get('username', 'User') }}&background=random"
+                 alt="User" style="border-radius: 50%; width: 100%; height: 100%;">
+        </div>
+        <span>Hello, {{ session.get('username', 'User') }}</span>
+    </div>
+
+    <div class="center-logo">
+        <a href="{{ url_for('admin.dashboard') }}">
+            <img src="{{ url_for('static', filename='images/logo-white.png') }}"
+                 alt="CRC">
+        </a>
+    </div>
+
+
+    <div class="header-actions">
+                <a href="{{ url_for('admin.low_stock_alert') }}" style="position: relative;">
+            <img src="https://cdn-icons-png.flaticon.com/512/3602/3602123.png" alt="Notifications">
+            <span id="notification-badge" class="notification-badge">{{ total_alerts }}</span>
+        </a>
+        <a href="{{ url_for('main.logout') }}">
+            <img src="{{ url_for('static', filename='images/logout.png') }}"
+                 alt="Logout"
+                 style="width: 30px; height: 32px; cursor: pointer;">
+        </a>
+
+    </div>
+</div>
+
+<div class="main-body">
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+        <button class="tab-btn active">Accessory & Update price</button>
+        <!-- Sửa button tab này -->
+        <button class="tab-btn" onclick="window.location.href='{{ url_for('admin.vat_settings') }}'">
+            VAT & Number of vehicles
+        </button>
+    </div>
+
+    <!-- Quantity in Stock Section -->
+    <div class="quantity-section">
+        <div class="section-title">Quantity in stock</div>
+        <div class="bar-chart-container">
+            <div style="text-align: center;">
+                <p>Bar chart visualization</p>
+                <p style="font-size: 0.9rem; color: #999;">Total inventory: {{ total_inventory }} items</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pie Charts Grid -->
+    <div class="pie-charts-grid">
+        <!-- Many Imported Components -->
+        <div class="pie-card">
+            <div class="section-title">Many imported components</div>
+            <div class="pie-chart-placeholder">
+                Pie Chart
+            </div>
+            <div style="padding: 0 2rem;">
+                {% for item in most_imported %}
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>{{ item.name }}:</span>
+                    <strong>{{ item.imported }}</strong>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Most Used Components -->
+        <div class="pie-card">
+            <div class="section-title">Most used components</div>
+            <div class="pie-chart-placeholder">
+                Pie Chart
+            </div>
+            <div style="padding: 0 2rem;">
+                {% for item in most_used %}
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>{{ item.name }}:</span>
+                    <strong>{{ item.used }}</strong>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-hide alerts after 5 seconds
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            }, 5000);
+        });
+
+        // Format number inputs
+        const priceInputs = document.querySelectorAll('input[type="number"]');
+        priceInputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.borderColor = '#990000';
+            });
+            input.addEventListener('blur', function() {
+                this.style.borderColor = '#ccc';
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+
+(navigation)
+<a href="{{ url_for('admin.accessories') }}" class="nav-link">
+    <span>📦</span> Accessories Management
+</a>

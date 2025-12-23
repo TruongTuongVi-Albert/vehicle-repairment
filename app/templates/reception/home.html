@@ -181,7 +181,7 @@
     <div class="user-info">
         <div class="user-avatar">
             <img src="https://ui-avatars.com/api/?name={{ session.get('username', 'User') }}&background=random"
-                alt="User" style="border-radius: 50%; width: 100%; height: 100%;">
+                 alt="User" style="border-radius: 50%; width: 100%; height: 100%;">
         </div>
         <span>Hello, {{ session.get('username', 'User') }}</span>
     </div>
@@ -189,8 +189,12 @@
     <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="Logo" class="header-logo">
 
     <div class="header-actions">
-        <img src="{{ url_for('static', filename='images/bell.png') }}" alt="Add" style="width: 30px; height: auto;">
-        <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Add" style="width: 30px; height: auto;">
+        <a href="{{ url_for('main.logout') }}">
+            <img src="{{ url_for('static', filename='images/logout.png') }}"
+                 alt="Logout"
+                 style="width: 30px; height: 32px; cursor: pointer;">
+        </a>
+
     </div>
 </div>
 
@@ -203,75 +207,75 @@
         <div class="search-box">
             <input type="text" class="search-input" placeholder="Enter search information...">
             <img class="search-icon" src="{{ url_for('static', filename='images/search.png') }}" alt="Search"
-                style="width: 40px; height: auto;">
+                 style="width: 40px; height: auto;">
         </div>
 
         <button class="refresh-btn" onclick="window.location.reload()">
             <img src="{{ url_for('static', filename='images/refresh.png') }}" alt="Refresh"
-                style="width: 50px; height: auto;">
+                 style="width: 50px; height: auto;">
         </button>
     </div>
 
     <table class="reception-table">
         <thead>
-            <tr>
-                <th style="width: 50px;">No</th>
-                <th>Code</th>
-                <th>Customer name</th>
-                <th>N-plate</th>
-                <th>V-type</th>
-                <th>Date of receipt</th>
-                <th>Status</th>
-            </tr>
+        <tr>
+            <th style="width: 50px;">No</th>
+            <th>Code</th>
+            <th>Customer name</th>
+            <th>N-plate</th>
+            <th>V-type</th>
+            <th>Date of receipt</th>
+            <th>Status</th>
+        </tr>
         </thead>
         <tbody>
-            {% for slip in slips %}
-            <tr onclick="window.location.href='{{ url_for('reception.detail', slip_id=slip.id) }}'"
-                style="cursor: pointer;">
-                <td>{{ loop.index }}</td>
-                <td>TNX{{ "%03d" | format(slip.id) }}</td>
-                <td>{{ slip.owner_name }}</td>
-                <td>{{ slip.license_plate }}</td>
-                <td>{{ slip.vehicle_type }}</td>
-                <td>{{ slip.reception_date.strftime('%d/%m/%Y') }}</td>
-                <td>
-                    <div class="status-cell">
-                        {% if slip.status == 'pending' %}
-                        <span class="status-icon">
+        {% for slip in slips %}
+        <tr onclick="window.location.href='{{ url_for('reception.detail', slip_id=slip.id) }}'"
+            style="cursor: pointer;">
+            <td>{{ loop.index }}</td>
+            <td>TNX{{ "%03d" | format(slip.id) }}</td>
+            <td>{{ slip.owner_name }}</td>
+            <td>{{ slip.license_plate }}</td>
+            <td>{{ slip.vehicle_type }}</td>
+            <td>{{ slip.reception_date.strftime('%d/%m/%Y') }}</td>
+            <td>
+                <div class="status-cell">
+                    {% if slip.status == 'pending' %}
+                    <span class="status-icon">
                             <img src="{{ url_for('static', filename='images/price-tag.png') }}" alt="Pending"
-                                style="width: 20px; height: auto;">
+                                 style="width: 20px; height: auto;">
                         </span> Quote
-                        {% elif slip.status == 'waiting' %}
-                        <span class="status-icon">
+                    {% elif slip.status == 'waiting' %}
+                    <span class="status-icon">
                             <img src="{{ url_for('static', filename='images/time.png') }}" alt="Waiting"
-                                style="width: 20px; height: auto;">
+                                 style="width: 20px; height: auto;">
                         </span> Waiting
-                        {% elif slip.status == 'repairing' %}
-                        <span class="status-icon">
+                    {% elif slip.status == 'repairing' %}
+                    <span class="status-icon">
                             <img src="{{ url_for('static', filename='images/wrench.png') }}" alt="Repairing"
-                                style="width: 20px; height: auto;">
+                                 style="width: 20px; height: auto;">
                         </span> Repairing
-                        {% elif slip.status == 'completed' %}
-                        <span class="status-icon">
+                    {% elif slip.status == 'completed' %}
+                    <span class="status-icon">
                             <img src="{{ url_for('static', filename='images/approved.png') }}" alt="Complete"
-                                style="width: 20px; height: auto;">
+                                 style="width: 20px; height: auto;">
                         </span> Complete
-                        {% elif slip.status == 'paid' %}
-                        <span class="status-icon">
+                    {% elif slip.status == 'paid' %}
+                    <span class="status-icon">
                             <img src="{{ url_for('static', filename='images/paid.png') }}" alt="Paid"
-                                style="width: 20px; height: auto;">
+                                 style="width: 20px; height: auto;">
                         </span> Paid
-                        {% else %}
-                        {{ slip.status }}
-                        {% endif %}
-                    </div>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="7" style="text-align: center;">No data available</td>
-            </tr>
-            {% endfor %}
+                    {% else %}
+                    {{ slip.status }}
+                    {% endif %}
+                </div>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="7" style="text-align: center;">No data available</td>
+        </tr>
+        {% endfor %}
         </tbody>
     </table>
 </div>
@@ -288,7 +292,7 @@
 {% if modal %}
 <div class="modal-overlay">
     <a href="{{ url_for('reception.home') }}"
-        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: default; z-index: 0;"></a>
+       style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: default; z-index: 0;"></a>
     <div class="modal-content" style="z-index: 1;">
         {% if modal == 'add' %}
         {% include 'reception/add_car.html' %}

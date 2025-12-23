@@ -34,8 +34,9 @@
         </nav>
         {% endif %}
 
-        <main class="content"
-            style="background-image: url('{{ url_for('static', filename='images/background.png') }}'); background-size: cover; background-repeat: no-repeat;">
+<!--        <main class="content"-->
+<!--            style="background-image: url('{{ url_for('static', filename='images/background.png') }}'); background-size: cover; background-repeat: no-repeat;">-->
+        <main class="content {% block content_class %}{% endblock %}">
             {% with messages = get_flashed_messages() %}
             {% if messages %}
             <div class="flash-messages">

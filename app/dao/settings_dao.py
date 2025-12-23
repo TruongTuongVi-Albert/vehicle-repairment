@@ -31,8 +31,31 @@ def set_setting(key, value):
     db.session.commit()
     return setting
 
-
 def get_all_settings():
     """Get all settings as dict"""
     settings = SystemSetting.query.all()
     return {s.setting_key: s.setting_value for s in settings}
+
+
+
+
+# TESTING
+
+
+class SettingsDAO:
+
+    @staticmethod
+    def get_setting(key, default=None):
+        setting = SystemSetting.query.filter_by(setting_key=key).first()
+        return setting.setting_value if setting else default
+
+    @staticmethod
+    def set_setting(key, value):
+        setting = SystemSetting.query.filter_by(setting_key=key).first()
+        if setting:
+            setting.setting_value = value
+        else:
+            setting = SystemSetting(setting_key=key, setting_value=value)
+            db.session.add(setting)
+
+        db.session.commit()

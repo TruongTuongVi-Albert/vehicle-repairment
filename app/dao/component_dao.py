@@ -1,4 +1,5 @@
 from app.models import Component
+from app.dao.settings_dao import SettingsDAO
 from app import db
 
 
@@ -8,8 +9,7 @@ def get_all_active():
 
 
 def get_all_components():
-    """Get all components including deleted"""
-    return Component.query.all()
+    return Component.query.filter_by(is_deleted=False).all()
 
 
 def get_component_by_id(component_id):
@@ -52,3 +52,34 @@ def soft_delete_component(component_id):
         db.session.commit()
         return True
     return False
+
+
+
+
+# TESTING
+
+class ComponentDAO:
+
+    @staticmethod
+    def get_low_stock_threshold(default=10):
+        value = SettingsDAO.get_setting('low_stock_threshold', default)
+        try:
+            return int(value)
+        except:
+            return default
+
+    @staticmethod
+    def get_low_stock_components():
+        threshold = ComponentDAO.get_low_stock_threshold()
+        return Component.query.filter(
+            Component.is_deleted == False,
+            Component.stock_quantity <= threshold
+        ).order_by(Component.stock_quantity.asc()).all()
+
+    @staticmethod
+    def count_low_stock_components():
+        threshold = ComponentDAO.get_low_stock_threshold()
+        return Component.query.filter(
+            Component.is_deleted == False,
+            Component.stock_quantity <= threshold
+        ).count()
