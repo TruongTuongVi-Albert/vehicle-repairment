@@ -173,7 +173,13 @@
 
     <div class="header-actions">
         <img src="{{ url_for('static', filename='images/bell.png') }}" alt="Add" style="width: 30px; height: auto;">
-        <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Add" style="width: 30px; height: auto;">
+        <div class="header-actions">
+            <a href="{{ url_for('main.logout') }}">
+                <img src="{{ url_for('static', filename='images/logout.png') }}"
+                     alt="Logout"
+                     style="width: 30px; height: 32px; cursor: pointer;">
+            </a>
+        </div>
     </div>
 </div>
 
