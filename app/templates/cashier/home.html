@@ -212,11 +212,21 @@
         <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="CRC">
     </div>
 
-<div class="header-actions">
+    <<<<<<< HEAD <div class="header-actions">
         <a href="{{ url_for('main.logout') }}" title="Logout">
             <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Logout">
         </a>
-    </div>
+        =======
+        <div class="header-actions">
+            <img src="{{ url_for('static', filename='images/bell.png') }}" alt="Add" style="width: 30px; height: auto;">
+            <div class="header-actions">
+                <a href="{{ url_for('main.logout') }}">
+                    <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Logout"
+                        style="width: 30px; height: 32px; cursor: pointer;">
+                </a>
+            </div>
+            >>>>>>> 60f1140a48b12a30909a43a4d996d52a66b25266
+        </div>
 </div>
 
 <div class="main-body">
@@ -262,28 +272,28 @@
         </thead>
         <tbody>
             {% for slip in completed_slips %}
-            <tr onclick="window.location.href='{{ url_for('cashier.invoice', repair_id=slip.repair_id) }}'"
-                style="cursor: pointer;">
-                <td>{{ loop.index }}</td>
-                <td>TNX{{ "%03d" | format(slip.id) }}</td>
-                <td>{{ slip.owner_name }}</td>
-                <td>{{ slip.license_plate }}</td>
-                <td>{{ "{:,.0f}".format(slip.total_amount if slip.total_amount else 0) }}</td>
-                <td>{{ "{:,.0f}".format((slip.total_amount * vat_rate / 100) if slip.total_amount else 0) }}</td>
-                <td>{{ "{:,.0f}".format((slip.total_amount * (1 + vat_rate / 100)) if slip.total_amount else 0) }}</td>
-                <td>
-                    {% if slip.status == 'completed' %}
-                    <span class="status-icon">
-                        <img src="{{ url_for('static', filename='images/approved.png') }}" alt="Complete"
-                            style="width: 20px; height: auto;">
-                    </span>
-                    {% elif slip.status == 'paid' %}
-                    <span class="status-icon">
-                        <img src="{{ url_for('static', filename='images/paid.png') }}" alt="Paid"
-                            style="width: 20px; height: auto;">
-                    </span>
-                    {% endif %}
-                </td>
+            <!-- <tr onclick="window.location.href='{{ url_for('cashier.invoice', repair_id=slip.repair_id) }}'"
+                style="cursor: pointer;"> -->
+            <td>{{ loop.index }}</td>
+            <td>TNX{{ "%03d" | format(slip.id) }}</td>
+            <td>{{ slip.owner_name }}</td>
+            <td>{{ slip.license_plate }}</td>
+            <td>{{ "{:,.0f}".format(slip.total_amount if slip.total_amount else 0) }}</td>
+            <td>{{ "{:,.0f}".format((slip.total_amount * vat_rate / 100) if slip.total_amount else 0) }}</td>
+            <td>{{ "{:,.0f}".format((slip.total_amount * (1 + vat_rate / 100)) if slip.total_amount else 0) }}</td>
+            <td>
+                {% if slip.status == 'completed' %}
+                <span class="status-icon">
+                    <img src="{{ url_for('static', filename='images/approved.png') }}" alt="Complete"
+                        style="width: 20px; height: auto;">
+                </span>
+                {% elif slip.status == 'paid' %}
+                <span class="status-icon">
+                    <img src="{{ url_for('static', filename='images/paid.png') }}" alt="Paid"
+                        style="width: 20px; height: auto;">
+                </span>
+                {% endif %}
+            </td>
             </tr>
             {% else %}
             <tr>

@@ -2,7 +2,6 @@
 
 {% block content %}
 <style>
-
     .app-container {
         flex-direction: column;
     }
@@ -183,11 +182,21 @@
 
     <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="Logo" class="header-logo">
 
-<div class="header-actions">
+    <<<<<<< HEAD <div class="header-actions">
         <a href="{{ url_for('main.logout') }}" title="Logout">
             <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Logout">
         </a>
-    </div>
+        =======
+        <div class="header-actions">
+            <img src="{{ url_for('static', filename='images/bell.png') }}" alt="Add" style="width: 30px; height: auto;">
+            <div class="header-actions">
+                <a href="{{ url_for('main.logout') }}">
+                    <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Logout"
+                        style="width: 30px; height: 32px; cursor: pointer;">
+                </a>
+            </div>
+            >>>>>>> 60f1140a48b12a30909a43a4d996d52a66b25266
+        </div>
 </div>
 
 <div class="status-filter-bar">
@@ -235,47 +244,47 @@
         </thead>
         <tbody>
             {% for slip in slips %}
-            <tr onclick="window.location.href='{{ url_for('technician.view_detail', slip_id=slip.id) }}'"
-                style="cursor: pointer;">
-                <td>{{ loop.index }}</td>
-                <td>TNX{{ "%03d" | format(slip.id) }}</td>
-                <td>{{ slip.owner_name }}</td>
-                <td>{{ slip.license_plate }}</td>
-                <td>{{ slip.vehicle_type }}</td>
-                <td>{{ slip.date_display.strftime('%d/%m/%Y') if slip.date_display else
-                    slip.reception_date.strftime('%d/%m/%Y') }}</td>
-                <td>
-                    <div class="status-cell">
-                        {% if slip.status == 'pending' %}
-                        <span class="status-icon">
-                            <img src="{{ url_for('static', filename='images/price-tag.png') }}" alt="Pending"
-                                style="width: 20px; height: auto;">
-                        </span> Quote
-                        {% elif slip.status == 'waiting' %}
-                        <span class="status-icon">
-                            <img src="{{ url_for('static', filename='images/time.png') }}" alt="Waiting"
-                                style="width: 20px; height: auto;">
-                        </span> Waiting
-                        {% elif slip.status == 'repairing' %}
-                        <span class="status-icon">
-                            <img src="{{ url_for('static', filename='images/wrench.png') }}" alt="Repairing"
-                                style="width: 20px; height: auto;">
-                        </span> Repairing
-                        {% elif slip.status == 'completed' %}
-                        <span class="status-icon">
-                            <img src="{{ url_for('static', filename='images/approved.png') }}" alt="Complete"
-                                style="width: 20px; height: auto;">
-                        </span> Complete
-                        {% elif slip.status == 'paid' %}
-                        <span class="status-icon">
-                            <img src="{{ url_for('static', filename='images/paid.png') }}" alt="Paid"
-                                style="width: 20px; height: auto;">
-                        </span> Paid
-                        {% else %}
-                        {{ slip.status }}
-                        {% endif %}
-                    </div>
-                </td>
+            <!-- <tr onclick="window.location.href='{{ url_for('technician.view_detail', slip_id=slip.id) }}'"
+                style="cursor: pointer;"> -->
+            <td>{{ loop.index }}</td>
+            <td>TNX{{ "%03d" | format(slip.id) }}</td>
+            <td>{{ slip.owner_name }}</td>
+            <td>{{ slip.license_plate }}</td>
+            <td>{{ slip.vehicle_type }}</td>
+            <td>{{ slip.date_display.strftime('%d/%m/%Y') if slip.date_display else
+                slip.reception_date.strftime('%d/%m/%Y') }}</td>
+            <td>
+                <div class="status-cell">
+                    {% if slip.status == 'pending' %}
+                    <span class="status-icon">
+                        <img src="{{ url_for('static', filename='images/price-tag.png') }}" alt="Pending"
+                            style="width: 20px; height: auto;">
+                    </span> Quote
+                    {% elif slip.status == 'waiting' %}
+                    <span class="status-icon">
+                        <img src="{{ url_for('static', filename='images/time.png') }}" alt="Waiting"
+                            style="width: 20px; height: auto;">
+                    </span> Waiting
+                    {% elif slip.status == 'repairing' %}
+                    <span class="status-icon">
+                        <img src="{{ url_for('static', filename='images/wrench.png') }}" alt="Repairing"
+                            style="width: 20px; height: auto;">
+                    </span> Repairing
+                    {% elif slip.status == 'completed' %}
+                    <span class="status-icon">
+                        <img src="{{ url_for('static', filename='images/approved.png') }}" alt="Complete"
+                            style="width: 20px; height: auto;">
+                    </span> Complete
+                    {% elif slip.status == 'paid' %}
+                    <span class="status-icon">
+                        <img src="{{ url_for('static', filename='images/paid.png') }}" alt="Paid"
+                            style="width: 20px; height: auto;">
+                    </span> Paid
+                    {% else %}
+                    {{ slip.status }}
+                    {% endif %}
+                </div>
+            </td>
             </tr>
             {% else %}
             <tr>
